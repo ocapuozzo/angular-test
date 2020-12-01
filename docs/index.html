@@ -921,7 +921,11 @@ Nous venons de réaliser un <strong><em>refactoring</em></strong>. C&#8217;est t
 </div>
 </div>
 <div class="paragraph">
-<p>Nous ne manquerons pas de mettre à jour la structure de l&#8217;objet retourné par la méthode du service méto :</p>
+<p>Fort heureusement TpyeScript étant typé, les erreurs révélées lors de la compilation vous guide
+vers les parties à mettre à jour suite à la modification de l&#8217;interface.</p>
+</div>
+<div class="paragraph">
+<p>Par exemple, nous ne manquerons pas de mettre à jour la structure de l&#8217;objet retourné par la méthode du service méto :</p>
 </div>
 <div class="listingblock">
 <div class="title">Listing 17. src/app/service/meteo/meteo.service.ts</div>
@@ -945,7 +949,8 @@ Nous venons de réaliser un <strong><em>refactoring</em></strong>. C&#8217;est t
 <p>À ce moment des modifications, la suite de tests <code>HelloWorldComponent</code> devrait passer.</p>
 </div>
 <div class="paragraph">
-<p>Nous allons maintenant demander au service d&#8217;effectuer une requête http à la demande d&#8217;une température.</p>
+<p>Nous allons maintenant demander au service d&#8217;effectuer une requête http à la demande d&#8217;une température
+pour une ville donnée.</p>
 </div>
 <div class="listingblock">
 <div class="title">Listing 18. src/app/service/meteo/meteo.service.ts</div>
@@ -982,13 +987,13 @@ Nous venons de réaliser un <strong><em>refactoring</em></strong>. C&#8217;est t
 })
 <span class="reserved">export</span> <span class="reserved">class</span> MeteoService {
 
-  constructor(<span class="reserved">private</span> httpClient: HttpClient) { }  <i class="conum" data-value="1"></i><b>(1)</b>
+  constructor(<span class="reserved">private</span> httpClient: HttpClient) { }          <i class="conum" data-value="1"></i><b>(1)</b>
 
-  getTemperatureFromCity(city: string): Observable&lt;any&gt; {
-    <span class="keyword">return</span> <span class="local-variable">this</span>.httpClient.get(<span class="local-variable">this</span>.getBaseUrl() + <span class="string"><span class="delimiter">&quot;</span><span class="content">/</span><span class="delimiter">&quot;</span></span> + city); <i class="conum" data-value="2"></i><b>(2)</b>
+  getTemperatureFromCity(city: string): Observable&lt;any&gt; {  <i class="conum" data-value="2"></i><b>(2)</b>
+    <span class="keyword">return</span> <span class="local-variable">this</span>.httpClient.get(<span class="local-variable">this</span>.getBaseUrl() + <span class="string"><span class="delimiter">&quot;</span><span class="content">/</span><span class="delimiter">&quot;</span></span> + city);
   }
 
-  getBaseUrl() : string {                         <i class="conum" data-value="3"></i><b>(3)</b>
+  getBaseUrl() : string {                                  <i class="conum" data-value="3"></i><b>(3)</b>
     <span class="keyword">return</span> GlobalConstants.meteoUrlAPI;
   }
 }</pre></td>
@@ -1003,7 +1008,9 @@ Nous venons de réaliser un <strong><em>refactoring</em></strong>. C&#8217;est t
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Lancement de la requête HTTP, qui retourn un objet de type <code>Observable</code>.</td>
+<td>Lancement de la requête HTTP, qui retourne un objet de type <code>Observable</code> <em>non typé</em> ; si
+vous êtes sûr de la structure de la réponse, vous pouvez typer le résultat plus finement en mentionnant
+à la place de <em>any</em> le nom d&#8217;une classe ou d&#8217;une interface.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>

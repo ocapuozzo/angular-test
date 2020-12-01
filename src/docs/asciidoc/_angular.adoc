@@ -473,7 +473,10 @@ et bien entendu, le composant présente cette valeur à l'utilisateur :
 </div>
 ----
 
-Nous ne manquerons pas de mettre à jour la structure de l'objet retourné par la méthode du service méto :
+Fort heureusement TpyeScript étant typé, les erreurs révélées lors de la compilation vous guide
+vers les parties à mettre à jour suite à la modification de l'interface.
+
+Par exemple, nous ne manquerons pas de mettre à jour la structure de l'objet retourné par la méthode du service méto :
 
 
 .src/app/service/meteo/meteo.service.ts
@@ -488,7 +491,8 @@ Nous ne manquerons pas de mettre à jour la structure de l'objet retourné par l
 
 À ce moment des modifications, la suite de tests `HelloWorldComponent` devrait passer.
 
-Nous allons maintenant demander au service d'effectuer une requête http à la demande d'une température.
+Nous allons maintenant demander au service d'effectuer une requête http à la demande d'une température
+pour une ville donnée.
 
 .src/app/service/meteo/meteo.service.ts
 [source, javascript, numbers]
@@ -503,20 +507,22 @@ import { HttpClient } from '@angular/common/http';
 })
 export class MeteoService {
 
-  constructor(private httpClient: HttpClient) { }  <1>
+  constructor(private httpClient: HttpClient) { }          <1>
 
-  getTemperatureFromCity(city: string): Observable<any> {
-    return this.httpClient.get(this.getBaseUrl() + "/" + city); <2>
+  getTemperatureFromCity(city: string): Observable<any> {  <2>
+    return this.httpClient.get(this.getBaseUrl() + "/" + city);
   }
 
-  getBaseUrl() : string {                         <3>
+  getBaseUrl() : string {                                  <3>
     return GlobalConstants.meteoUrlAPI;
   }
 }
 ----
 
 <1> Définition d'une dépendance à une instance de `HttpClient`.
-<2> Lancement de la requête HTTP, qui retourn un objet de type `Observable`.
+<2> Lancement de la requête HTTP, qui retourne un objet de type `Observable` _non typé_ ; si
+vous êtes sûr de la structure de la réponse, vous pouvez typer le résultat plus finement en mentionnant
+à la place de _any_ le nom d'une classe ou d'une interface.
 <3> Afin de connaitre, dans les tests, l'url utilisée.
 
 Nous voici avec un service qui dépend d'un autre service avec appel asynchrone... Pas simple à tester.
