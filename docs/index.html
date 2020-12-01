@@ -648,14 +648,12 @@ voir par exemple <a href="https://developer.mozilla.org/fr/docs/Apprendre/CSS/Bu
 5
 6
 7
-8
 </pre></td>
   <td class="code"><pre>it(<span class="string"><span class="delimiter">'</span><span class="content">view update name</span><span class="delimiter">'</span></span>, () =&gt; {
   const rootElt = fixture.nativeElement;
-  let firstP = rootElt.querySelector(<span class="string"><span class="delimiter">&quot;</span><span class="content">div p:first-of-type</span><span class="delimiter">&quot;</span></span>).textContent;
   component.name = <span class="string"><span class="delimiter">&quot;</span><span class="content">newName</span><span class="delimiter">&quot;</span></span>;
   fixture.detectChanges();
-  firstP = rootElt.querySelector(<span class="string"><span class="delimiter">&quot;</span><span class="content">div p:first-of-type</span><span class="delimiter">&quot;</span></span>).textContent;
+  const firstP = rootElt.querySelector(<span class="string"><span class="delimiter">&quot;</span><span class="content">div p:first-of-type</span><span class="delimiter">&quot;</span></span>).textContent;
   expect(firstP).toContain(<span class="string"><span class="delimiter">'</span><span class="content">newName</span><span class="delimiter">'</span></span>);
 });</pre></td>
 </tr></table></code></pre>

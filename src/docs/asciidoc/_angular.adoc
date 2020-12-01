@@ -324,10 +324,9 @@ Voici un autre test qui vérifie la réactivité de la vue face à un changement
 ----
 it('view update name', () => {
   const rootElt = fixture.nativeElement;
-  let firstP = rootElt.querySelector("div p:first-of-type").textContent;
   component.name = "newName";
   fixture.detectChanges();
-  firstP = rootElt.querySelector("div p:first-of-type").textContent;
+  const firstP = rootElt.querySelector("div p:first-of-type").textContent;
   expect(firstP).toContain('newName');
 });
 ----
