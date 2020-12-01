@@ -583,7 +583,7 @@ puis nous ferons évoluer le composant afin qu&#8217;il s&#8217;appuie sur un se
 Pour cela nous interrogeons la partie de DOM occupée par le composant.</p>
 </div>
 <div class="listingblock">
-<div class="title">Listing 9. exemple</div>
+<div class="title">Listing 9. it - view default view name</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="javascript"><table class="CodeRay"><tr>
   <td class="line-numbers"><pre>1
@@ -626,7 +626,7 @@ Dans le cas présent, on cherche à atteindre le premier <code>&lt;p&gt;</code> 
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-Un bonne connaissance des possiblités des sélecteurs CSS s&#8217;impose ici. C&#8217;est une bonne raison de
+Une bonne connaissance des possibilités des sélecteurs <code>CSS</code> s&#8217;impose ici. C&#8217;est une bonne raison de
 revisiter des ressources web sur ce sujet, et de s&#8217;améliorer !
 voir par exemple <a href="https://developer.mozilla.org/fr/docs/Apprendre/CSS/Building_blocks/Selectors">developer.mozilla Apprendre CSS/Selector</a> et
 <a href="https://css-tricks.com/almanac/selectors/f/first-of-type/">first-of-type selector</a>
@@ -634,13 +634,40 @@ voir par exemple <a href="https://developer.mozilla.org/fr/docs/Apprendre/CSS/Bu
 </tr>
 </table>
 </div>
+<div class="paragraph">
+<p>Voici un autre test qui vérifie la réactivité de la vue face à un changement de son modèle (instance de la classe du composant).</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing 10. it - view update name</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="javascript"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre>1
+2
+3
+4
+5
+6
+7
+8
+</pre></td>
+  <td class="code"><pre>it(<span class="string"><span class="delimiter">'</span><span class="content">view update name</span><span class="delimiter">'</span></span>, () =&gt; {
+  const rootElt = fixture.nativeElement;
+  let firstP = rootElt.querySelector(<span class="string"><span class="delimiter">&quot;</span><span class="content">div p:first-of-type</span><span class="delimiter">&quot;</span></span>).textContent;
+  component.name = <span class="string"><span class="delimiter">&quot;</span><span class="content">newName</span><span class="delimiter">&quot;</span></span>;
+  fixture.detectChanges();
+  firstP = rootElt.querySelector(<span class="string"><span class="delimiter">&quot;</span><span class="content">div p:first-of-type</span><span class="delimiter">&quot;</span></span>).textContent;
+  expect(firstP).toContain(<span class="string"><span class="delimiter">'</span><span class="content">newName</span><span class="delimiter">'</span></span>);
+});</pre></td>
+</tr></table></code></pre>
+</div>
+</div>
 </div>
 <div class="sect3">
 <h4 id="exercice"><a class="anchor" href="#exercice"></a>Exercice</h4>
 <div class="ulist">
 <ul>
 <li>
-<p>Concevoir une nouvelle spécification (un nouveu test unitaire) qui vérifie que la température
+<p>Concevoir une nouvelle spécification (un nouveau test unitaire) qui vérifie que la température
 présentée par le composant est bien celle attendue.</p>
 </li>
 </ul>
@@ -674,7 +701,7 @@ proposé par <a href="https://www.prevision-meteo.ch">prevision-meteo.ch</a>.</p
 </div>
 </div>
 <div class="listingblock">
-<div class="title">Listing 10. global-constant.ts</div>
+<div class="title">Listing 11. global-constant.ts</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="javascript"><span class="reserved">export</span> <span class="reserved">class</span> GlobalConstants {
   <span class="reserved">static</span> readonly meteoUrlAPI : string  = <span class="string"><span class="delimiter">&quot;</span><span class="content">https://www.prevision-meteo.ch/services/json/</span><span class="delimiter">&quot;</span></span>;
@@ -691,7 +718,7 @@ Ce type mérite donc d&#8217;être déclaré dans un fichier à part. Nous le pl
 </div>
 </div>
 <div class="listingblock">
-<div class="title">Listing 11. temperature.ts</div>
+<div class="title">Listing 12. temperature.ts</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="js"><span class="reserved">export</span> <span class="reserved">interface</span> Temperature {
   readonly temp : number
@@ -704,7 +731,7 @@ déclarons à la place une dépendance, plus quelques aménagements <strong>temp
 Le but de ces aménagements temporaires est de faire passer les tests unitaires actuels :</p>
 </div>
 <div class="listingblock">
-<div class="title">Listing 12. hello-world.component.ts</div>
+<div class="title">Listing 13. hello-world.component.ts</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="javascript"><table class="CodeRay"><tr>
   <td class="line-numbers"><pre>1
@@ -783,7 +810,7 @@ Le but de ces aménagements temporaires est de faire passer les tests unitaires 
 </div>
 </div>
 <div class="listingblock">
-<div class="title">Listing 13. src/app/service/meteo/meteo.service.ts</div>
+<div class="title">Listing 14. src/app/service/meteo/meteo.service.ts</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="javascript"><table class="CodeRay"><tr>
   <td class="line-numbers"><pre>1
@@ -843,7 +870,7 @@ Nous venons de réaliser un <strong><em>refactoring</em></strong>. C&#8217;est t
 <p>Dans l&#8217;interface <code>Temperature</code> nous ajoutons le nom de la ville concernée.</p>
 </div>
 <div class="listingblock">
-<div class="title">Listing 14. src/app/model/temperature.ts</div>
+<div class="title">Listing 15. src/app/model/temperature.ts</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="javascript"><table class="CodeRay"><tr>
   <td class="line-numbers"><pre>1
@@ -862,7 +889,7 @@ Nous venons de réaliser un <strong><em>refactoring</em></strong>. C&#8217;est t
 <p>et bien entendu, le composant présente cette valeur à l&#8217;utilisateur :</p>
 </div>
 <div class="listingblock">
-<div class="title">Listing 15. src/app/hello-world/hello-world.component.html</div>
+<div class="title">Listing 16. src/app/hello-world/hello-world.component.html</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="html"><table class="CodeRay"><tr>
   <td class="line-numbers"><pre>1
@@ -899,7 +926,7 @@ Nous venons de réaliser un <strong><em>refactoring</em></strong>. C&#8217;est t
 <p>Nous ne manquerons pas de mettre à jour la structure de l&#8217;objet retourné par la méthode du service méto :</p>
 </div>
 <div class="listingblock">
-<div class="title">Listing 16. src/app/service/meteo/meteo.service.ts</div>
+<div class="title">Listing 17. src/app/service/meteo/meteo.service.ts</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="javascript"><table class="CodeRay"><tr>
   <td class="line-numbers"><pre>1
@@ -923,7 +950,7 @@ Nous venons de réaliser un <strong><em>refactoring</em></strong>. C&#8217;est t
 <p>Nous allons maintenant demander au service d&#8217;effectuer une requête http à la demande d&#8217;une température.</p>
 </div>
 <div class="listingblock">
-<div class="title">Listing 17. src/app/service/meteo/meteo.service.ts</div>
+<div class="title">Listing 18. src/app/service/meteo/meteo.service.ts</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="javascript"><table class="CodeRay"><tr>
   <td class="line-numbers"><pre>1
@@ -993,7 +1020,7 @@ Nous venons de réaliser un <strong><em>refactoring</em></strong>. C&#8217;est t
 <p>Heureusement, Angular vient avec des bibliothèques de classes dédiées à ce problème.</p>
 </div>
 <div class="listingblock">
-<div class="title">Listing 18. src/app/service/meteo/meteo.service.spec.ts</div>
+<div class="title">Listing 19. src/app/service/meteo/meteo.service.spec.ts</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="javascript"><table class="CodeRay"><tr>
   <td class="line-numbers"><pre>1

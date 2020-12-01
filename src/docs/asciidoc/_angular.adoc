@@ -297,7 +297,7 @@ Nous pouvons vérifier si le composant réagit bien aux changements de valeur de
 Nous allons vérifier le lien de réactivité entre le modèle et la vue.
 Pour cela nous interrogeons la partie de DOM occupée par le composant.
 
-.exemple
+.it - view default view name
 [source, javascript, linenums]
 ----
 it('view default view name', () => {
@@ -312,14 +312,29 @@ it('view default view name', () => {
 Dans le cas présent, on cherche à atteindre le premier `<p>` dans le seul `<div>` du rendu HTML du composant.
 <3> : Vérifie que la chaîne "_unknown_" est inclus dans les texte référencé par `firstP`.
 
-TIP: Un bonne connaissance des possiblités des sélecteurs CSS s'impose ici. C'est une bonne raison de
+TIP: Une bonne connaissance des possibilités des sélecteurs `CSS` s'impose ici. C'est une bonne raison de
 revisiter des ressources web sur ce sujet, et de s'améliorer !
 voir par exemple https://developer.mozilla.org/fr/docs/Apprendre/CSS/Building_blocks/Selectors[developer.mozilla Apprendre CSS/Selector] et
 https://css-tricks.com/almanac/selectors/f/first-of-type/[first-of-type selector]
 
+Voici un autre test qui vérifie la réactivité de la vue face à un changement de son modèle (instance de la classe du composant).
+
+.it - view update name
+[source, javascript, linenums]
+----
+it('view update name', () => {
+  const rootElt = fixture.nativeElement;
+  let firstP = rootElt.querySelector("div p:first-of-type").textContent;
+  component.name = "newName";
+  fixture.detectChanges();
+  firstP = rootElt.querySelector("div p:first-of-type").textContent;
+  expect(firstP).toContain('newName');
+});
+----
+
 === Exercice
 
-* Concevoir une nouvelle spécification (un nouveu test unitaire) qui vérifie que la température
+* Concevoir une nouvelle spécification (un nouveau test unitaire) qui vérifie que la température
 présentée par le composant est bien celle attendue.
 
 == Evolution du composant
