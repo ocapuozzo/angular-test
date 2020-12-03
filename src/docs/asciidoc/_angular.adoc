@@ -126,7 +126,7 @@ interface Temperature {
 export class HelloWorldComponent implements OnInit {
 
   name : string = "unknown";
-  temperature : Temperature = {temp : 32};
+  temperature : Temperature = {temp : 42};
 
   constructor() { }
 
@@ -268,7 +268,7 @@ Nous ferons de meme avec la température
   [...]
 
   it('default temperature', () => {
-    expect(component.temperature.temp).toBe(32); <1>
+    expect(component.temperature.temp).toBe(42); <1>
   });
 ----
 
@@ -395,11 +395,11 @@ export class HelloWorldComponent implements OnInit {
 
   @Input() name: string = "unknown";
 
-  public get temperature(): Temperature {         <1>
+  public get temperature(): Temperature {                     <1>
     return this.meteoService.getTemperatureFromCity("Melun"); <2>
   }
 
-  constructor(private meteoService: MeteoService) { }  <3>
+  constructor(private meteoService: MeteoService) { }         <3>
 
   ngOnInit(): void {}
 
@@ -429,7 +429,7 @@ import { Temperature } from 'src/app/model/temperature';
 export class MeteoService {
 
   getTemperatureFromCity(city : string) : Temperature {
-    return {temp : 32};
+    return {temp : 42};
   }
 
   constructor() { }
@@ -485,7 +485,7 @@ Par exemple, nous ne manquerons pas de mettre à jour la structure de l'objet re
 [...]
 
  getTemperatureFromCity(city : string) : Temperature {
-    return {city: "Melun", temp : 32};
+    return {city: "Melun", temp : 42};
  }
 ----
 

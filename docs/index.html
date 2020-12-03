@@ -307,7 +307,7 @@ $</code></pre>
 <span class="reserved">export</span> <span class="reserved">class</span> HelloWorldComponent <span class="reserved">implements</span> OnInit {
 
   <span class="key">name</span> : string = <span class="string"><span class="delimiter">&quot;</span><span class="content">unknown</span><span class="delimiter">&quot;</span></span>;
-  temperature : Temperature = {<span class="key">temp</span> : <span class="integer">32</span>};
+  temperature : Temperature = {<span class="key">temp</span> : <span class="integer">42</span>};
 
   constructor() { }
 
@@ -541,7 +541,7 @@ puis nous ferons évoluer le composant afin qu&#8217;il s&#8217;appuie sur un se
 <pre class="CodeRay highlight"><code data-lang="javascript">  [...]
 
   it(<span class="string"><span class="delimiter">'</span><span class="content">default temperature</span><span class="delimiter">'</span></span>, () =&gt; {
-    expect(component.temperature.temp).toBe(<span class="integer">32</span>); <i class="conum" data-value="1"></i><b>(1)</b>
+    expect(component.temperature.temp).toBe(<span class="integer">42</span>); <i class="conum" data-value="1"></i><b>(1)</b>
   });</code></pre>
 </div>
 </div>
@@ -768,11 +768,11 @@ Le but de ces aménagements temporaires est de faire passer les tests unitaires 
 
   <span class="error">@</span>Input() name: string = <span class="string"><span class="delimiter">&quot;</span><span class="content">unknown</span><span class="delimiter">&quot;</span></span>;
 
-  <span class="reserved">public</span> get temperature(): Temperature {         <i class="conum" data-value="1"></i><b>(1)</b>
+  <span class="reserved">public</span> get temperature(): Temperature {                     <i class="conum" data-value="1"></i><b>(1)</b>
     <span class="keyword">return</span> <span class="local-variable">this</span>.meteoService.getTemperatureFromCity(<span class="string"><span class="delimiter">&quot;</span><span class="content">Melun</span><span class="delimiter">&quot;</span></span>); <i class="conum" data-value="2"></i><b>(2)</b>
   }
 
-  constructor(<span class="reserved">private</span> meteoService: MeteoService) { }  <i class="conum" data-value="3"></i><b>(3)</b>
+  constructor(<span class="reserved">private</span> meteoService: MeteoService) { }         <i class="conum" data-value="3"></i><b>(3)</b>
 
   ngOnInit(): <span class="keyword">void</span> {}
 
@@ -837,7 +837,7 @@ Le but de ces aménagements temporaires est de faire passer les tests unitaires 
 <span class="reserved">export</span> <span class="reserved">class</span> MeteoService {
 
   getTemperatureFromCity(city : string) : Temperature {
-    <span class="keyword">return</span> {<span class="key">temp</span> : <span class="integer">32</span>};
+    <span class="keyword">return</span> {<span class="key">temp</span> : <span class="integer">42</span>};
   }
 
   constructor() { }
@@ -940,7 +940,7 @@ vers les parties à mettre à jour suite à la modification de l&#8217;interface
   <td class="code"><pre>[...]
 
  getTemperatureFromCity(city : string) : Temperature {
-    <span class="keyword">return</span> {<span class="key">city</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">Melun</span><span class="delimiter">&quot;</span></span>, <span class="key">temp</span> : <span class="integer">32</span>};
+    <span class="keyword">return</span> {<span class="key">city</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">Melun</span><span class="delimiter">&quot;</span></span>, <span class="key">temp</span> : <span class="integer">42</span>};
  }</pre></td>
 </tr></table></code></pre>
 </div>
