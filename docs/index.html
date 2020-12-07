@@ -417,33 +417,33 @@ describe(<span class="string"><span class="delimiter">'</span><span class="conte
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>: import de librairies Angular dédiées aux tests</td>
+<td>Import de librairies Angular dédiées aux tests</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>: Donne un nom à la portée des différents tests <em>it('xxx')</em> définis dans ce block, connu sous le nom de <strong>suite</strong> (ou <em>test suite</em>)</td>
+<td>Donne un nom à la portée des différents tests <em>it('xxx')</em> définis dans ce block, connu sous le nom de <strong>suite</strong> (ou <em>test suite</em>)</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>: <code>beforeEach</code> : Pour définir les actions à exécuter <strong>avant</strong> chacun des tests dans cette suite.</td>
+<td><code>beforeEach</code> : Pour définir les actions à exécuter <strong>avant</strong> chacun des tests dans cette suite.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>: Déclaration et compilation du composant (CUT - <em>Component Under Test</em>).
+<td>Déclaration et compilation du composant (CUT - <em>Component Under Test</em>).
 L&#8217;appel de la méthode static <code>configureTestingModule</code> de <code>TestBed</code> est asynchrone (<strong>promise</strong>), nous demandons d&#8217;attendre son
 retour (<code>await</code>) avant créer le composant à l&#8217;étape suivante.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="5"></i><b>5</b></td>
-<td>: Initialisation du contexte (instanciation du composant et son contexte)</td>
+<td>Initialisation du contexte (instanciation du composant et son contexte)</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="6"></i><b>6</b></td>
-<td>: Vérifie que la variable locale <em>component</em> a bien été initialisée</td>
+<td>Vérifie que la variable locale <em>component</em> a bien été initialisée</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="7"></i><b>7</b></td>
-<td>: <code>toBeTruthy</code> vérifie que <code>component</code> est "not undefined". Une instruction de test de <strong>Jasmine</strong>.</td>
+<td><code>toBeTruthy</code> vérifie que <code>component</code> est "not undefined". Une instruction de test de <strong>Jasmine</strong>.</td>
 </tr>
 </table>
 </div>
@@ -454,7 +454,7 @@ retour (<code>await</code>) avant créer le composant à l&#8217;étape suivante
 <p>La commande CLI pour le lancement des tests est : <code>ng test</code></p>
 </div>
 <div class="paragraph">
-<p>Pour lancer une suite donnée de tests, la syntaxe est :</p>
+<p>Pour lancer une suite ciblée de tests, la syntaxe consiste à utiliser l&#8217;option <code>include</code> au lancement :</p>
 </div>
 <div class="paragraph">
 <p><code>ng test --include='**/someFolder/*.spec.ts'</code></p>
@@ -524,11 +524,11 @@ puis nous ferons évoluer le composant afin qu&#8217;il s&#8217;appuie sur un se
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>: <em>"defaut name"</em> est le nom de la spec</td>
+<td><em>"defaut name"</em> est le nom de la spec</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>: Vérifie la valeur de la propriété <em>name</em> de l&#8217;objet référencé par <em>component</em></td>
+<td>Vérifie la valeur de la propriété <em>name</em> de l&#8217;objet référencé par <em>component</em></td>
 </tr>
 </table>
 </div>
@@ -549,7 +549,7 @@ puis nous ferons évoluer le composant afin qu&#8217;il s&#8217;appuie sur un se
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>: La temperature étant représentée par un objet, nous accédons ici directement
+<td>La temperature étant représentée par un objet, nous accédons ici directement
 à sa propriété public <em>temp</em> (qui est en lecture seule)</td>
 </tr>
 </table>
@@ -606,16 +606,16 @@ Pour cela nous interrogeons la partie de DOM occupée par le composant.</p>
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>: Obtenir le noeud racine du template du composant</td>
+<td>Obtenir le noeud racine du template du composant</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>: C&#8217;est ici que l&#8217;on fera usage de <strong>selecteur CSS</strong> pour atteindre les parties souhaitées.
+<td>C&#8217;est ici que l&#8217;on fera usage de <strong>selecteur CSS</strong> pour atteindre les parties souhaitées.
 Dans le cas présent, on cherche à atteindre le premier <code>&lt;p&gt;</code> dans le seul <code>&lt;div&gt;</code> du rendu HTML du composant.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>: Vérifie que la chaîne "<em>unknown</em>" est inclus dans les texte référencé par <code>firstP</code>.</td>
+<td>Vérifie que la chaîne "<em>unknown</em>" est inclus dans les texte référencé par <code>firstP</code>.</td>
 </tr>
 </table>
 </div>
@@ -651,13 +651,25 @@ voir par exemple <a href="https://developer.mozilla.org/fr/docs/Apprendre/CSS/Bu
 </pre></td>
   <td class="code"><pre>it(<span class="string"><span class="delimiter">'</span><span class="content">view update name</span><span class="delimiter">'</span></span>, () =&gt; {
   const rootElt = fixture.nativeElement;
-  component.name = <span class="string"><span class="delimiter">&quot;</span><span class="content">newName</span><span class="delimiter">&quot;</span></span>;
-  fixture.detectChanges();
+  component.name = <span class="string"><span class="delimiter">&quot;</span><span class="content">newName</span><span class="delimiter">&quot;</span></span>;   <i class="conum" data-value="1"></i><b>(1)</b>
+  fixture.detectChanges();      <i class="conum" data-value="2"></i><b>(2)</b>
   const firstP = rootElt.querySelector(<span class="string"><span class="delimiter">&quot;</span><span class="content">div p:first-of-type</span><span class="delimiter">&quot;</span></span>).textContent;
   expect(firstP).toContain(<span class="string"><span class="delimiter">'</span><span class="content">newName</span><span class="delimiter">'</span></span>);
 });</pre></td>
 </tr></table></code></pre>
 </div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Modification dans le modèle</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Demande au contexte de vue du test de se mettre à jour</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect3">
@@ -695,7 +707,7 @@ proposé par <a href="https://www.prevision-meteo.ch">prevision-meteo.ch</a>.</p
 </div>
 <div class="literalblock">
 <div class="content">
-<pre>ngenerate class GlobalConstants</pre>
+<pre>$ ngenerate class GlobalConstants</pre>
 </div>
 </div>
 <div class="listingblock">
@@ -1004,7 +1016,8 @@ pour une ville donnée.</p>
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Définition d&#8217;une dépendance à une instance de <code>HttpClient</code>.</td>
+<td>Définition d&#8217;une dépendance à une instance de <code>HttpClient</code> afin de pouvoir lancer des requêtes HTTP
+depuis la logique de l&#8217;application.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
@@ -1022,7 +1035,8 @@ vous êtes sûr de la structure de la réponse, vous pouvez typer le résultat p
 <p>Nous voici avec un service qui dépend d&#8217;un autre service avec appel asynchrone&#8230;&#8203; Pas simple à tester.</p>
 </div>
 <div class="paragraph">
-<p>Heureusement, Angular vient avec des bibliothèques de classes dédiées à ce problème.</p>
+<p>Heureusement, Angular vient avec des bibliothèques de classes dédiées à ce problème, qui nous permettra
+de simuler des requêtes HTTP.</p>
 </div>
 <div class="listingblock">
 <div class="title">Listing 19. src/app/service/meteo/meteo.service.spec.ts</div>
