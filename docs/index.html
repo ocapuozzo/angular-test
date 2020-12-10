@@ -457,10 +457,10 @@ retour (<code>await</code>) avant créer le composant à l&#8217;étape suivante
 <p>Pour lancer une suite ciblée de tests, la syntaxe consiste à utiliser l&#8217;option <code>include</code> au lancement :</p>
 </div>
 <div class="paragraph">
-<p><code>ng test --include='**/someFolder/*.spec.ts'</code></p>
+<p><code>ng test --include=**/someFolder/*.spec.ts</code></p>
 </div>
 <div class="listingblock">
-<div class="title">Listing 5. ng test --include='**/hello-world/*.spec.ts'</div>
+<div class="title">Listing 5. ng test --include=**/hello-world/*.spec.ts</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="angular2">Karma v5.0.9 server started at http://0.0.0.0:9876/
 :INFO [launcher]: Starting browser Chrome
@@ -480,7 +480,7 @@ TOTAL: 1 SUCCESS</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Sans surprise, le seul test inclus dans la suite (<em>chould create</em>) est passé !</p>
+<p>Sans surprise, le seul test inclus dans la suite "<em>HelloWorldComponent</em>", à savoir <em>chould create</em>, est passé !</p>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -499,7 +499,7 @@ découvrir quelques méthodes de tests <code>toBeGreaterThan</code>, <code>toEqu
 <div class="sect2">
 <h3 id="ajout-de-tests-spécifiques"><a class="anchor" href="#ajout-de-tests-spécifiques"></a>Ajout de tests spécifiques</h3>
 <div class="paragraph">
-<p>Il est temps maintenant de vérifier si le composant se comporte comme attendu, c&#8217;est à dire s&#8217;il est fidèle à ses spécifications (d&#8217;où le sufixe <code>.spec.ts</code> du fichier regroupant les tests).</p>
+<p>Nous allons maintenant vérifier si le composant se comporte comme attendu, c&#8217;est-à-dire s&#8217;il est fidèle à ses spécifications (d&#8217;où le sufixe <code>.spec.ts</code> du fichier regroupant les tests).</p>
 </div>
 <div class="paragraph">
 <p>Dans un premier temps nous testerons la vue et sa mise à jour avec le modèle (propriété de la classe TS du composant),
@@ -1198,7 +1198,7 @@ nous ne maitrisons pas (rend <code>undefined</code> en cas d&#8217;échec). (voi
 <h3 id="vérification"><a class="anchor" href="#vérification"></a>Vérification</h3>
 <div class="literalblock">
 <div class="content">
-<pre>ng test --include='**/service/meteo/*.spec.ts'</pre>
+<pre>ng test --include=**/service/meteo/*.spec.ts</pre>
 </div>
 </div>
 <div class="imageblock">

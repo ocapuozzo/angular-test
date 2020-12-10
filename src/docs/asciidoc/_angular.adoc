@@ -212,9 +212,9 @@ La commande CLI pour le lancement des tests est : `ng test`
 
 Pour lancer une suite ciblée de tests, la syntaxe consiste à utiliser l'option `include` au lancement :
 
-`ng test --include='\**/someFolder/*.spec.ts'`
+`ng test --include=\**/someFolder/*.spec.ts`
 
-.ng test --include='\**/hello-world/*.spec.ts'
+.ng test --include=\**/hello-world/*.spec.ts
 [source,angular2]
 ....
 Karma v5.0.9 server started at http://0.0.0.0:9876/
@@ -230,7 +230,7 @@ Voici le rapport de test, passé au vert, rendu par l'instance du navigateur sup
 
 image::run-test-suite-1.png[run-test-suite-1]
 
-Sans surprise, le seul test inclus dans la suite (_chould create_) est passé !
+Sans surprise, le seul test inclus dans la suite "_HelloWorldComponent_", à savoir _chould create_, est passé !
 
 
 TIP: Il est temps de prendre une pause. Voici un peu de lecture qui vous permettra de
@@ -238,7 +238,7 @@ découvrir quelques méthodes de tests `toBeGreaterThan`, `toEqual`... : https:/
 
 == Ajout de tests spécifiques
 
-Il est temps maintenant de vérifier si le composant se comporte comme attendu, c'est à dire s'il est fidèle à ses spécifications (d'où le sufixe `.spec.ts` du fichier regroupant les tests).
+Nous allons maintenant vérifier si le composant se comporte comme attendu, c'est-à-dire s'il est fidèle à ses spécifications (d'où le sufixe `.spec.ts` du fichier regroupant les tests).
 
 Dans un premier temps nous testerons la vue et sa mise à jour avec le modèle (propriété de la classe TS du composant),
 puis nous ferons évoluer le composant afin qu'il s'appuie sur un service donnant une température.
@@ -608,7 +608,7 @@ nous ne maitrisons pas (rend `undefined` en cas d'échec). (voir https://www.typ
 
 == Vérification
 
- ng test --include='**/service/meteo/*.spec.ts'
+ ng test --include=**/service/meteo/*.spec.ts
 
 image::run-test-suite-service.png[run-test-suite]
 
