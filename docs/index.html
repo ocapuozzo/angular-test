@@ -32,8 +32,9 @@
 <li><a href="#contexe-angular">Contexe Angular</a></li>
 <li><a href="#tester-un-composant">Tester un composant</a></li>
 <li><a href="#cli-ng-et-frameworks-de-test">CLI ng et frameworks de test</a></li>
-<li><a href="#exemple-hello-world">Exemple Hello world !</a></li>
-<li><a href="#component-spec-ts-initial">&lt;component&gt;.spec.ts initial</a></li>
+<li><a href="#création-de-l-application">Création de l&#8217;application</a></li>
+<li><a href="#composant-hello-world">Composant Hello world !</a></li>
+<li><a href="#component-spec-ts">&lt;component&gt;.spec.ts</a></li>
 <li><a href="#lancement-des-tests">Lancement des tests</a></li>
 <li><a href="#ajout-de-tests-spécifiques">Ajout de tests spécifiques</a>
 <ul class="sectlevel3">
@@ -45,10 +46,16 @@
 <li><a href="#evolution-du-composant">Evolution du composant</a>
 <ul class="sectlevel3">
 <li><a href="#paramètre-de-l-application">Paramètre de l&#8217;application</a></li>
-<li><a href="#début-de-creation-du-service-météo-première-version">Début de creation du service météo (première version)</a></li>
 </ul>
 </li>
-<li><a href="#update-de-l-interface-temperature">Update de l&#8217;interface Temperature</a></li>
+<li><a href="#création-d-un-service-de-météo">Création d&#8217;un service de météo</a></li>
+<li><a href="#update-de-l-interface-temperature">Update de l&#8217;interface Temperature</a>
+<ul class="sectlevel3">
+<li><a href="#exercice-2">Exercice</a></li>
+<li><a href="#mise-à-jour-du-test-du-service-meteo">Mise à jour du test du service meteo</a></li>
+</ul>
+</li>
+<li><a href="#appel-d-un-service-api-via-http">Appel d&#8217;un service API via HTTP</a></li>
 <li><a href="#vérification">Vérification</a></li>
 <li><a href="#conclusion">Conclusion</a>
 <ul class="sectlevel3">
@@ -178,8 +185,7 @@ Le composant testé est appelé <em>component-under-test</em> (CUT).
 soit faire directement appel à un navigateur.</p>
 </li>
 <li>
-<p>Il est courant que l&#8217;instance de la classe TypeScript du composant utilise elle-même des
-services qui lui sont injectés, ce qui rend plus difficile l&#8217;instanciation de cette classe.</p>
+<p>Il est courant que l&#8217;instance de la classe TypeScript du composant utilise des services injectés, ce qui rend plus difficile l&#8217;instanciation de cette classe.</p>
 </li>
 </ul>
 </div>
@@ -198,15 +204,24 @@ Le but de la spécification est de tester le composant, pas le service, et les s
 &#8212; https://angular.io/guide/testing-components-scenarios
 </div>
 </div>
-<div class="paragraph">
-<p><code>TestBed</code> est une classe de Angular, dont le rôle est de configurer et d&#8217;initialiser un
- environment pour les tests unitaires.</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<code>TestBed</code> est une classe de Angular, dont le rôle est de configurer et d&#8217;initialiser un
+ environment pour les tests unitaires.
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect2">
 <h3 id="cli-ng-et-frameworks-de-test"><a class="anchor" href="#cli-ng-et-frameworks-de-test"></a>CLI ng et frameworks de test</h3>
 <div class="paragraph">
-<p>Par défaut (2020/2021), Angular CLI génère du code de test basé sur <em>Jasmine</em> et <em>Karma</em>.</p>
+<p>Par défaut (2021/2022), Angular CLI génère du code de test basé sur <em>Jasmine</em> et <em>Karma</em>.</p>
 </div>
 <div class="ulist">
 <ul>
@@ -231,31 +246,74 @@ composant et portant le nom du composant postfixé par <code>.spec.ts</code>.</p
 </div>
 </div>
 <div class="sect2">
-<h3 id="exemple-hello-world"><a class="anchor" href="#exemple-hello-world"></a>Exemple Hello world !</h3>
-<div class="paragraph">
-<p>Afin d&#8217;illustrer les instructions de test, nous créons, dans un projet servant d&#8217;exemple
-et via CLI ng, un composant que nous nommerons <code>hello-word</code>.</p>
-</div>
+<h3 id="création-de-l-application"><a class="anchor" href="#création-de-l-application"></a>Création de l&#8217;application</h3>
 <div class="listingblock">
-<div class="title">Listing 1. génération d&#8217;un composant à l&#8217;aide de cli ng</div>
+<div class="title">Listing 1. génération du projet basique à l&#8217;aide de cli ng</div>
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">$ ng generate component HelloWorld
-CREATE src/app/hello-world/hello-world.component.scss (0 bytes)
-CREATE src/app/hello-world/hello-world.component.html (26 bytes)
-CREATE src/app/hello-world/hello-world.component.spec.ts (655 bytes)
-CREATE src/app/hello-world/hello-world.component.ts (295 bytes)
-UPDATE src/app/app.module.ts (690 bytes)
+<pre class="CodeRay highlight"><code data-lang="bash">$ ng new projet-demo
+? Would you like to add Angular routing? No
+? Which stylesheet format would you like to use? CSS
+[...]
+✔ Packages installed successfully.
+    Successfully initialized git
 $</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Modifions le template :</p>
+<p>On installe un framework <code>css</code> :</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="html"><span class="tag">&lt;h2</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">title</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>Hello world !<span class="tag">&lt;/h2&gt;</span>
-<span class="tag">&lt;p&gt;</span>Nice day {{name}}.<span class="tag">&lt;/p&gt;</span>
-<span class="tag">&lt;p&gt;</span>Today it is {{temperature.temp}}°<span class="tag">&lt;/p&gt;</span></code></pre>
+<pre>npm install bulma --save</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>puis mettons a jour <code>composer.json</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre> "styles": [
+   "node_modules/bulma/css/bulma.min.css",
+   "src/styles.css"
+ ],</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="composant-hello-world"><a class="anchor" href="#composant-hello-world"></a>Composant Hello world !</h3>
+<div class="paragraph">
+<p>Afin d&#8217;illustrer les instructions de test, nous créons, dans le projet demo, un composant que nous nommerons <code>hello-world</code> qui, en plus de ire bonjour nous donnera la température du jour.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">.génération d'un composant à l'aide de cli ng
+$ ng generate component HelloWorld
+CREATE src/app/hello-world/hello-world.component.css (0 bytes)
+CREATE src/app/hello-world/hello-world.component.html (26 bytes)
+CREATE src/app/hello-world/hello-world.component.spec.ts (655 bytes)
+CREATE src/app/hello-world/hello-world.component.ts (294 bytes)
+UPDATE src/app/app.module.ts (414 bytes)
+$</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Modifions le template du composant :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="html"><span class="tag">&lt;style&gt;</span>
+<span class="inline"> <span class="class">.box</span> {
+   <span class="key">box-shadow</span>: <span class="value">inset</span> <span class="float">0</span> <span class="float">0</span> <span class="float">1em</span> <span class="value">white</span>, <span class="float">0</span> <span class="float">0</span> <span class="float">.5em</span> <span class="value">black</span>;
+   <span class="key">text-align</span>: <span class="value">center</span>;
+   <span class="key">width</span>: <span class="float">200px</span>;
+ }</span>
+<span class="tag">&lt;/style&gt;</span>
+
+<span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">box</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
+    <span class="tag">&lt;h2</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">title</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>Hello world !<span class="tag">&lt;/h2&gt;</span>
+    <span class="tag">&lt;p&gt;</span>Nice day {{name}}.<span class="tag">&lt;/p&gt;</span>
+    <span class="tag">&lt;p&gt;</span>Today it is {{temperature.current_condition.tmp}}°<span class="tag">&lt;/p&gt;</span>
+<span class="tag">&lt;/div&gt;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -289,15 +347,37 @@ $</code></pre>
 22
 23
 24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
 </pre></td>
   <td class="code"><pre><span class="reserved">import</span> { Component, OnInit } from <span class="string"><span class="delimiter">'</span><span class="content">@angular/core</span><span class="delimiter">'</span></span>;
 
-<span class="comment">// une interface est un modèle de structure d'objet.</span>
-<span class="comment">// Tout objet (ou classe) se référent à cette interface devra implémenter</span>
-<span class="comment">// ce modèle.</span>
-<span class="reserved">interface</span> Temperature {
-  readonly temp : number
-}
+<span class="comment">/// une interface est un modèle de structure d'objet (un type personnalisé)</span>
+<span class="comment">// Tout objet (ou classe) se référent à cette interface</span>
+<span class="comment">// devra, au moins, implémenter ce modèle (basé sur un API vue plus loin)</span>
+ <span class="reserved">interface</span> Temperature {
+   <span class="key">city_info</span>: {
+     <span class="key">name</span>: string
+     country: string
+    },
+    <span class="key">current_condition</span>: {
+     <span class="key">tmp</span>: number
+    }
+ }
 
 <span class="error">@</span>Component({
   <span class="key">selector</span>: <span class="string"><span class="delimiter">'</span><span class="content">app-hello-world</span><span class="delimiter">'</span></span>,
@@ -306,8 +386,18 @@ $</code></pre>
 })
 <span class="reserved">export</span> <span class="reserved">class</span> HelloWorldComponent <span class="reserved">implements</span> OnInit {
 
+  <span class="comment">// attributs de la classe</span>
   <span class="key">name</span> : string = <span class="string"><span class="delimiter">&quot;</span><span class="content">unknown</span><span class="delimiter">&quot;</span></span>;
-  temperature : Temperature = {<span class="key">temp</span> : <span class="integer">42</span>};
+
+  temperature: Temperature = {
+    <span class="key">city_info</span>: {
+      <span class="key">name</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">Melun</span><span class="delimiter">&quot;</span></span>,
+      <span class="key">country</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">France</span><span class="delimiter">&quot;</span></span>
+    },
+    <span class="key">current_condition</span>: {
+      <span class="key">tmp</span>: <span class="integer">42</span>
+    }
+  };
 
   constructor() { }
 
@@ -318,7 +408,7 @@ $</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Le composant principal, parent de notre composant, <code>app.component.html</code> (avec des classes CSS de bulma) :</p>
+<p>Le template <code>app.component.html</code>, du composant principal, utilise notre composant, (avec des classes CSS de bulma) :</p>
 </div>
 <div class="listingblock">
 <div class="title">Listing 3. app.component.html</div>
@@ -331,11 +421,14 @@ $</code></pre>
 <span class="tag">&lt;section</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">section centre</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
   <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">container</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
     <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">column </span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
-      <span class="tag">&lt;app-hello-world&gt;</span><span class="tag">&lt;/app-hello-world&gt;</span>
+      <span class="tag">&lt;app-hello-world&gt;</span><span class="tag">&lt;/app-hello-world&gt;</span> <i class="conum" data-value="1"></i><b>(1)</b>
     <span class="tag">&lt;/div&gt;</span>
   <span class="tag">&lt;/div&gt;</span>
 <span class="tag">&lt;/section&gt;</span></code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>&lt;1&gt;: Le composant <code>HelloWorldComponent</code> est un composant enfant de <code>AppComponent</code>.</p>
 </div>
 <div class="paragraph">
 <p>à l&#8217;exécution nous obtenons :</p>
@@ -347,9 +440,9 @@ $</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="component-spec-ts-initial"><a class="anchor" href="#component-spec-ts-initial"></a>&lt;component&gt;.spec.ts initial</h3>
+<h3 id="component-spec-ts"><a class="anchor" href="#component-spec-ts"></a>&lt;component&gt;.spec.ts</h3>
 <div class="paragraph">
-<p>Via la commande <code>ng generate component HelloWorld</code> un script de test est généré : <code>hello-world.component.spec.ts</code>.</p>
+<p>Lorsque nous avons demandé la création du composant <code>HelloWorld</code> par la commande  <code>ng generate component HelloWorld</code>, un script de test est généré : <code>hello-world.component.spec.ts</code>.</p>
 </div>
 <div class="paragraph">
 <p>Dans un premier nous analysons le code généré, puis l&#8217;étendrons par ajout de nouveaux tests.</p>
@@ -421,11 +514,11 @@ describe(<span class="string"><span class="delimiter">'</span><span class="conte
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Donne un nom à la portée des différents tests <em>it('xxx')</em> définis dans ce block, connu sous le nom de <strong>suite</strong> (ou <em>test suite</em>)</td>
+<td>Donne un nom (<code>HelloWorldComponent</code>) à la portée des différents tests <em>it('xxx')</em> définis dans ce block, connu sous le nom de <strong>suite</strong> (ou <em>test suite</em>)</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td><code>beforeEach</code> : Pour définir les actions à exécuter <strong>avant</strong> chacun des tests dans cette suite.</td>
+<td><code>beforeEach</code> : Pour définir les actions à exécuter <strong>avant</strong> chacun des tests dans cette suite, ce qui assure l&#8217;indépendance entre les tests.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
@@ -439,11 +532,11 @@ retour (<code>await</code>) avant créer le composant à l&#8217;étape suivante
 </tr>
 <tr>
 <td><i class="conum" data-value="6"></i><b>6</b></td>
-<td>Vérifie que la variable locale <em>component</em> a bien été initialisée</td>
+<td>Vérifie que la variable locale <em>component</em> a bien été initialisée. Les instructions du test sont placées dans le corps d&#8217;une fonction anonyme.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="7"></i><b>7</b></td>
-<td><code>toBeTruthy</code> vérifie que <code>component</code> est "not undefined". Une instruction de test de <strong>Jasmine</strong>.</td>
+<td><code>toBeTruthy</code> vérifie que <code>component</code> est "<em>not undefined</em>". Une instruction de test de <strong>Jasmine</strong>.</td>
 </tr>
 </table>
 </div>
@@ -454,13 +547,51 @@ retour (<code>await</code>) avant créer le composant à l&#8217;étape suivante
 <p>La commande CLI pour le lancement des tests est : <code>ng test</code></p>
 </div>
 <div class="paragraph">
-<p>Pour lancer une suite ciblée de tests, la syntaxe consiste à utiliser l&#8217;option <code>include</code> au lancement :</p>
+<p>Cette commande fera échouer le test nommé  : <code>should render title'</code> de <code>app.component.spec.ts</code>. Ceci est tout à fait normal car nous avons supprimé le comportement par défaut du template du composant principal.</p>
 </div>
 <div class="paragraph">
-<p><code>ng test --include=**/someFolder/*.spec.ts</code></p>
+<p>Pour résoudre ce problème, mettre en commentaire le test unitiare en question  :</p>
 </div>
 <div class="listingblock">
-<div class="title">Listing 5. ng test --include=**/hello-world/*.spec.ts</div>
+<div class="title">Listing 5. app.component.spec.ts</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="typescript"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+</pre></td>
+  <td class="code"><pre>[...]
+
+/*
+it('should render title', () =&gt; {
+  const fixture = TestBed.createComponent(AppComponent);
+  fixture.detectChanges();
+  const compiled = fixture.nativeElement as HTMLElement;
+  expect(compiled.querySelector('.content span')?.textContent).toContain('projet-demo app is running!');
+});
+*/
+</pre></td>
+</tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Pour lancer une suite ciblée de tests, la syntaxe consiste à utiliser l&#8217;option <code>include</code> au lancement : <code>ng test --include=**/someFolder/*.spec.ts</code></p>
+</div>
+<div class="paragraph">
+<p>Nous lancerons donc le seul test actuel :</p>
+</div>
+<div class="paragraph">
+<p><code>ng test --include=**/hello-world/*.spec.ts</code></p>
+</div>
+<div class="listingblock">
+<div class="title">Listing 6. ng test --include=**/hello-world/*.spec.ts</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="angular2">Karma v5.0.9 server started at http://0.0.0.0:9876/
 :INFO [launcher]: Starting browser Chrome
@@ -511,7 +642,7 @@ puis nous ferons évoluer le composant afin qu&#8217;il s&#8217;appuie sur un se
 <p>Vérification de l&#8217;état de l&#8217;instance gérant les données du modèle</p>
 </div>
 <div class="listingblock">
-<div class="title">Listing 6. ajout à la "test suite" describe('HelloWorldComponent', &#8230;&#8203;</div>
+<div class="title">Listing 7. ajout à la "test suite" describe('HelloWorldComponent', &#8230;&#8203;</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="javascript">  [...]
 
@@ -524,7 +655,7 @@ puis nous ferons évoluer le composant afin qu&#8217;il s&#8217;appuie sur un se
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td><em>"defaut name"</em> est le nom de la spec</td>
+<td><em>"defaut name"</em> est le nom du test, comme une variable ou une méthode, son nom doit clairement communiquer son objectif.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
@@ -536,12 +667,12 @@ puis nous ferons évoluer le composant afin qu&#8217;il s&#8217;appuie sur un se
 <p>Nous ferons de meme avec la température</p>
 </div>
 <div class="listingblock">
-<div class="title">Listing 7. vérifier la temperature par défaut</div>
+<div class="title">Listing 8. vérifier la temperature par défaut</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="javascript">  [...]
 
   it(<span class="string"><span class="delimiter">'</span><span class="content">default temperature</span><span class="delimiter">'</span></span>, () =&gt; {
-    expect(component.temperature.temp).toBe(<span class="integer">42</span>); <i class="conum" data-value="1"></i><b>(1)</b>
+    expect(component.temperature.current_condition.tmp).toBe(<span class="integer">42</span>); <i class="conum" data-value="1"></i><b>(1)</b>
   });</code></pre>
 </div>
 </div>
@@ -549,8 +680,7 @@ puis nous ferons évoluer le composant afin qu&#8217;il s&#8217;appuie sur un se
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>La temperature étant représentée par un objet, nous accédons ici directement
-à sa propriété public <em>temp</em> (qui est en lecture seule)</td>
+<td>La temperature étant représentée par un objet, nous accédons ici directement à sa propriété public <em>current_condition.tmp</em></td>
 </tr>
 </table>
 </div>
@@ -563,10 +693,10 @@ puis nous ferons évoluer le composant afin qu&#8217;il s&#8217;appuie sur un se
 </div>
 </div>
 <div class="paragraph">
-<p>Nous pouvons vérifier si le composant réagit bien aux changements de valeur de certains de ses propriétés :</p>
+<p>Nous allons maintenant vérifier que le composant réagit bien aux changements de valeur de certains de ses propriétés :</p>
 </div>
 <div class="listingblock">
-<div class="title">Listing 8. vérifier la possibilité de changer 'name'</div>
+<div class="title">Listing 9. vérifier la possibilité de changer 'name'</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="javascript">  [...]
   it(<span class="string"><span class="delimiter">'</span><span class="content">new component.name</span><span class="delimiter">'</span></span>, () =&gt; {
@@ -583,7 +713,7 @@ puis nous ferons évoluer le composant afin qu&#8217;il s&#8217;appuie sur un se
 Pour cela nous interrogeons la partie de DOM occupée par le composant.</p>
 </div>
 <div class="listingblock">
-<div class="title">Listing 9. it - view default view name</div>
+<div class="title">Listing 10. it - view default view name</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="javascript"><table class="CodeRay"><tr>
   <td class="line-numbers"><pre>1
@@ -634,11 +764,38 @@ voir par exemple <a href="https://developer.mozilla.org/fr/docs/Apprendre/CSS/Bu
 </tr>
 </table>
 </div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Nous vous invitons à tester en placant un identifiant d&#8217;élément du DOM dans le template du composant, comme par exemple :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="js"><span class="tag">&lt;p</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">hello</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>Nice day {{name}}.<span class="tag">&lt;/p&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Dans ce cas, le texte de l&#8217;élément est atteint sans ambiguité ainsi :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="js">rootElt.querySelector(<span class="string"><span class="delimiter">&quot;</span><span class="content">#hello</span><span class="delimiter">&quot;</span></span>).textContent;</code></pre>
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
 <div class="paragraph">
 <p>Voici un autre test qui vérifie la réactivité de la vue face à un changement de son modèle (instance de la classe du composant).</p>
 </div>
 <div class="listingblock">
-<div class="title">Listing 10. it - view update name</div>
+<div class="title">Listing 11. it - view update name</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="javascript"><table class="CodeRay"><tr>
   <td class="line-numbers"><pre>1
@@ -677,8 +834,7 @@ voir par exemple <a href="https://developer.mozilla.org/fr/docs/Apprendre/CSS/Bu
 <div class="ulist">
 <ul>
 <li>
-<p>Concevoir une nouvelle spécification (un nouveau test unitaire) qui vérifie que la température
-présentée par le composant est bien celle attendue.</p>
+<p>Concevoir une nouvelle spécification (un nouveau test unitaire automatisé) qui vérifie que la température présentée par le composant est bien celle attendue.</p>
 </li>
 </ul>
 </div>
@@ -687,15 +843,23 @@ présentée par le composant est bien celle attendue.</p>
 <div class="sect2">
 <h3 id="evolution-du-composant"><a class="anchor" href="#evolution-du-composant"></a>Evolution du composant</h3>
 <div class="paragraph">
-<p>Recherche d&#8217;un service API de requête de température. Il en existe de nombreux, nécessitant la plupart du temps
-une clé d&#8217;accès, et un abonnement au service.</p>
+<p>Recherche d&#8217;un service API de requête de température. Il en existe de nombreux, nécessitant la plupart du temps une clé d&#8217;accès, et un abonnement au service.</p>
 </div>
 <div class="paragraph">
 <p>Pour les besoins de ce support, nous utiliserons le service
 proposé par <a href="https://www.prevision-meteo.ch">prevision-meteo.ch</a>.</p>
 </div>
-<div class="paragraph">
-<p>Testez par vous-même : <a href="https://www.prevision-meteo.ch/services/json/melun">infos ville de Melun 77000 France</a></p>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Testez par vous-même avec un navigateur, et consulter le <strong>format JSON</strong> de la réponse : <a href="https://www.prevision-meteo.ch/services/json/melun">infos ville de Melun 77000 France</a>
+</td>
+</tr>
+</table>
 </div>
 <div class="sect3">
 <h4 id="paramètre-de-l-application"><a class="anchor" href="#paramètre-de-l-application"></a>Paramètre de l&#8217;application</h4>
@@ -707,11 +871,11 @@ proposé par <a href="https://www.prevision-meteo.ch">prevision-meteo.ch</a>.</p
 </div>
 <div class="literalblock">
 <div class="content">
-<pre>$ ngenerate class GlobalConstants</pre>
+<pre>$ ng generate class GlobalConstants</pre>
 </div>
 </div>
 <div class="listingblock">
-<div class="title">Listing 11. global-constant.ts</div>
+<div class="title">Listing 12. global-constant.ts</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="javascript"><span class="reserved">export</span> <span class="reserved">class</span> GlobalConstants {
   <span class="reserved">static</span> readonly meteoUrlAPI : string  = <span class="string"><span class="delimiter">&quot;</span><span class="content">https://www.prevision-meteo.ch/services/json/</span><span class="delimiter">&quot;</span></span>;
@@ -719,8 +883,8 @@ proposé par <a href="https://www.prevision-meteo.ch">prevision-meteo.ch</a>.</p
 </div>
 </div>
 <div class="paragraph">
-<p>Il est logique que le service météo nous retourne une instance de <code>Temperature</code>.
-Ce type mérite donc d&#8217;être déclaré dans un fichier à part. Nous le placerons dans un dossier nommée <code>model</code> :</p>
+<p>Il serait logique que le service météo nous retourne une instance de <code>Temperature</code>.
+Ce type mérite donc d&#8217;être déclaré dans un fichier à part. Nous le placerons dans un dossier nommé <code>model</code> :</p>
 </div>
 <div class="literalblock">
 <div class="content">
@@ -728,20 +892,33 @@ Ce type mérite donc d&#8217;être déclaré dans un fichier à part. Nous le pl
 </div>
 </div>
 <div class="listingblock">
-<div class="title">Listing 12. temperature.ts</div>
+<div class="title">Listing 13. temperature.ts</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="js"><span class="reserved">export</span> <span class="reserved">interface</span> Temperature {
-  readonly temp : number
+    <span class="key">current_condition</span>: {
+        <span class="key">tmp</span>: number
+    }
 }</code></pre>
 </div>
 </div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Définir une interface c&#8217;est renforcer la cohérence de type dans votre programme et permettre à TypeScript de détecter des erreurs à la conception (lors de la compilation, donc bien avant l&#8217;exécution).
+</td>
+</tr>
+</table>
+</div>
 <div class="paragraph">
-<p>Parallèlement, nous supprimons la définition de <code>Temperature</code> dans <code>hello-world.component.ts</code>, et
-déclarons à la place une dépendance, plus quelques aménagements <strong>temporaires</strong> expliqués ci-après.
+<p>Parallèlement, nous supprimons la définition de <code>Temperature</code> dans <code>hello-world.component.ts</code>, et déclarons à la place une dépendance, plus quelques aménagements <strong>temporaires</strong> expliqués ci-après.
 Le but de ces aménagements temporaires est de faire passer les tests unitaires actuels :</p>
 </div>
 <div class="listingblock">
-<div class="title">Listing 13. hello-world.component.ts</div>
+<div class="title">Listing 14. hello-world.component.ts</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="javascript"><table class="CodeRay"><tr>
   <td class="line-numbers"><pre>1
@@ -766,10 +943,10 @@ Le but de ces aménagements temporaires est de faire passer les tests unitaires 
 20
 21
 22
+23
 </pre></td>
   <td class="code"><pre><span class="reserved">import</span> { Component, Input, OnInit } from <span class="string"><span class="delimiter">'</span><span class="content">@angular/core</span><span class="delimiter">'</span></span>;
 <span class="reserved">import</span> { Temperature } from <span class="string"><span class="delimiter">'</span><span class="content">../model/temperature</span><span class="delimiter">'</span></span>;
-<span class="reserved">import</span> { MeteoService } from <span class="string"><span class="delimiter">'</span><span class="content">../service/meteo/meteo.service</span><span class="delimiter">'</span></span>;
 
 <span class="error">@</span>Component({
   <span class="key">selector</span>: <span class="string"><span class="delimiter">'</span><span class="content">app-hello-world</span><span class="delimiter">'</span></span>,
@@ -777,14 +954,16 @@ Le but de ces aménagements temporaires est de faire passer les tests unitaires 
   <span class="key">styleUrls</span>: [<span class="string"><span class="delimiter">'</span><span class="content">./hello-world.component.scss</span><span class="delimiter">'</span></span>]
 })
 <span class="reserved">export</span> <span class="reserved">class</span> HelloWorldComponent <span class="reserved">implements</span> OnInit {
-
+  <span class="comment">// attributs de la classe</span>
   <span class="error">@</span>Input() name: string = <span class="string"><span class="delimiter">&quot;</span><span class="content">unknown</span><span class="delimiter">&quot;</span></span>;
 
-  <span class="reserved">public</span> get temperature(): Temperature {                     <i class="conum" data-value="1"></i><b>(1)</b>
-    <span class="keyword">return</span> <span class="local-variable">this</span>.meteoService.getTemperatureFromCity(<span class="string"><span class="delimiter">&quot;</span><span class="content">Melun</span><span class="delimiter">&quot;</span></span>); <i class="conum" data-value="2"></i><b>(2)</b>
-  }
+  temperature: Temperature = {
+    <span class="key">current_condition</span>: {
+      <span class="key">tmp</span>: <span class="integer">42</span>
+    }
+  };
 
-  constructor(<span class="reserved">private</span> meteoService: MeteoService) { }         <i class="conum" data-value="3"></i><b>(3)</b>
+  constructor() { }
 
   ngOnInit(): <span class="keyword">void</span> {}
 
@@ -792,35 +971,60 @@ Le but de ces aménagements temporaires est de faire passer les tests unitaires 
 </tr></table></code></pre>
 </div>
 </div>
-<div class="colist arabic">
+<div class="admonitionblock important">
 <table>
 <tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>un <em>getter</em> est un accesseur automatique (c&#8217;est du js). Chaque accès en lecture à <em>temperature</em> (sans parenthèses en fin) passera par le code de ce <em>get</em>.</td>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+À ce niveau d&#8217;avancement, les précédents tests unitaires devraient tous passer. Vérifiez-le, et n&#8217;avancez pas plus loin tant que votre projet support n&#8217;est pas stabilisé.
+</td>
 </tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
 <tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>ici, nous appelons le service de <em>meteoService</em>.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>déclaration d&#8217;un service qui sera injecté automatiquement par Angular, en tant qu&#8217;attribut privé (<em>property</em>) de la classe.</td>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Nous venons de réaliser un <strong><em>refactoring</em></strong>. C&#8217;est très souvent le prix à payer pour favoriser les évolutions à venir.
+</td>
 </tr>
 </table>
 </div>
 </div>
-<div class="sect3">
-<h4 id="début-de-creation-du-service-météo-première-version"><a class="anchor" href="#début-de-creation-du-service-météo-première-version"></a>Début de creation du service météo (première version)</h4>
-<div class="paragraph">
-<p>Nous placerons ce service dans un dossier dédié (via <code>cli ng</code>) :</p>
 </div>
-<div class="literalblock">
+<div class="sect2">
+<h3 id="création-d-un-service-de-météo"><a class="anchor" href="#création-d-un-service-de-météo"></a>Création d&#8217;un service de météo</h3>
+<div class="paragraph">
+<p>Dans un premier, arrêtez l&#8217;exécution automatique des tests de <code>hello-world.component</code>, car les modifications que nous allons apporter à notre composant casseront la logique de ces tests, que nous corrigerons ensuite. (<code>CTRL+c dans le terminal où a été lancé la commande</code>)</p>
+</div>
+<div class="paragraph">
+<p>Nous allons créer un service qui va interroger l&#8217;API météo. Nous découpons ce refactoring en deux parties :</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Conception de la classe du service, puis test d&#8217;utilisation</p>
+</li>
+<li>
+<p>Appel du service distant via son API avec retour JSON</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Nous placerons ce service dans une classe dédiée (via <code>cli ng</code>) :</p>
+</div>
+<div class="listingblock">
 <div class="content">
-<pre>ng generate service Meteo --flat=false --path=src/app/service</pre>
+<pre class="CodeRay highlight"><code data-lang="bash"> ng generate service Meteo --flat=false --path=src/app/service</code></pre>
 </div>
 </div>
 <div class="listingblock">
-<div class="title">Listing 14. src/app/service/meteo/meteo.service.ts</div>
+<div class="title">Listing 15. src/app/service/meteo/meteo.service.ts</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="javascript"><table class="CodeRay"><tr>
   <td class="line-numbers"><pre>1
@@ -838,18 +1042,34 @@ Le but de ces aménagements temporaires est de faire passer les tests unitaires 
 13
 14
 15
+16
+17
+18
+19
+20
+21
+22
+23
 </pre></td>
   <td class="code"><pre>
 <span class="reserved">import</span> { Injectable } from <span class="string"><span class="delimiter">'</span><span class="content">@angular/core</span><span class="delimiter">'</span></span>;
+<span class="reserved">import</span> { Observable, of } from <span class="string"><span class="delimiter">'</span><span class="content">rxjs</span><span class="delimiter">'</span></span>;
 <span class="reserved">import</span> { Temperature } from <span class="string"><span class="delimiter">'</span><span class="content">src/app/model/temperature</span><span class="delimiter">'</span></span>;
 
 <span class="error">@</span>Injectable({
- <span class="key">providedIn</span>: <span class="string"><span class="delimiter">'</span><span class="content">root</span><span class="delimiter">'</span></span>
+ <span class="key">providedIn</span>: <span class="string"><span class="delimiter">'</span><span class="content">root</span><span class="delimiter">'</span></span>  <i class="conum" data-value="1"></i><b>(1)</b>
 })
+
 <span class="reserved">export</span> <span class="reserved">class</span> MeteoService {
 
-  getTemperatureFromCity(city : string) : Temperature {
-    <span class="keyword">return</span> {<span class="key">temp</span> : <span class="integer">42</span>};
+  <span class="comment">// retourne toujours le même objet observable, pour commencer</span>
+  getTemperatureFromCity(city : string) : Observable&lt;Temperature&gt;  { <i class="conum" data-value="2"></i><b>(2)</b>
+    <span class="keyword">return</span> of(
+      {
+       <span class="key">current_condition</span>: {
+         <span class="key">tmp</span>: <span class="integer">42</span>
+       }
+      });
   }
 
   constructor() { }
@@ -857,21 +1077,146 @@ Le but de ces aménagements temporaires est de faire passer les tests unitaires 
 </tr></table></code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>À ce niveau d&#8217;avancement, les précédents tests unitaires devraient tous passer.</p>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Cet attribut du décorateur (annotation) <code>@Injectable</code> spécifie que le composant est injectable sur l&#8217;ensemble de l&#8217;application</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Remarquez que l&#8217;objet <code>Observable</code> retourné est bien compatible avec l&#8217;interface <code>Temperature</code> (le type de la méthode)</td>
+</tr>
+</table>
 </div>
-<div class="admonitionblock important">
+<div class="admonitionblock note">
 <table>
 <tr>
 <td class="icon">
-<i class="fa icon-important" title="Important"></i>
+<i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-Nous venons de réaliser un <strong><em>refactoring</em></strong>. C&#8217;est très souvent le pris à payer pour favoriser les évolutions à venir.
+Nous passons par un objet <code>Observable</code> car l&#8217;appel de l&#8217;API (à venir) est suceptible d&#8217;échouer.
 </td>
 </tr>
 </table>
 </div>
+<div class="paragraph">
+<p>Puis nous déclarons l&#8217;utiliser dans le composant <code>HelloWorldComponent</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing 16. hello-world.component.ts</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="javascript"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+</pre></td>
+  <td class="code"><pre><span class="reserved">import</span> { Component, Input, OnInit } from <span class="string"><span class="delimiter">'</span><span class="content">@angular/core</span><span class="delimiter">'</span></span>;
+<span class="reserved">import</span> { Temperature } from <span class="string"><span class="delimiter">'</span><span class="content">../model/temperature</span><span class="delimiter">'</span></span>;
+<span class="reserved">import</span> { MeteoService } from <span class="string"><span class="delimiter">'</span><span class="content">../service/meteo/meteo.service</span><span class="delimiter">'</span></span>; <i class="conum" data-value="1"></i><b>(1)</b>
+
+<span class="error">@</span>Component({
+  <span class="key">selector</span>: <span class="string"><span class="delimiter">'</span><span class="content">app-hello-world</span><span class="delimiter">'</span></span>,
+  <span class="key">templateUrl</span>: <span class="string"><span class="delimiter">'</span><span class="content">./hello-world.component.html</span><span class="delimiter">'</span></span>,
+  <span class="key">styleUrls</span>: [<span class="string"><span class="delimiter">'</span><span class="content">./hello-world.component.scss</span><span class="delimiter">'</span></span>]
+})
+<span class="reserved">export</span> <span class="reserved">class</span> HelloWorldComponent <span class="reserved">implements</span> OnInit {
+
+  <span class="error">@</span>Input() name: string = <span class="string"><span class="delimiter">&quot;</span><span class="content">unknown</span><span class="delimiter">&quot;</span></span>;
+
+   myObserver = {
+    <span class="key">next</span>: (data: Temperature) =&gt; {
+      <span class="keyword">if</span> (data?.current_condition?.tmp) {
+        <span class="local-variable">this</span>.temperature.current_condition.tmp = data.current_condition.tmp;
+      } <span class="keyword">else</span> {
+        <span class="local-variable">this</span>.temperature.current_condition.tmp = -<span class="integer">42</span>;
+      }
+    }
+    ,
+    <span class="key">error</span>: (err: Error) =&gt; console.error(<span class="string"><span class="delimiter">'</span><span class="content">Observer got an error: </span><span class="delimiter">'</span></span> + err),
+    <span class="key">complete</span>: () =&gt; console.log(<span class="string"><span class="delimiter">'</span><span class="content">Observer got a complete notification</span><span class="delimiter">'</span></span>),
+  }
+
+  <span class="reserved">public</span> getActualTemperature() {
+    <span class="comment">// La méthode getTemperatureFromCity retourne un Observable,</span>
+    <span class="comment">// Nous nous abonnons en tant qu'observateur, via un objet dédié.</span>
+    <span class="comment">// Voir https://angular.io/guide/observables</span>
+    let cityName : string = <span class="string"><span class="delimiter">&quot;</span><span class="content">melun</span><span class="delimiter">&quot;</span></span>;
+    <span class="local-variable">this</span>.meteoService.getTemperatureFromCity(cityName).subscribe(<span class="local-variable">this</span>.myObserver);<i class="conum" data-value="2"></i><b>(2)</b>
+  }
+
+  constructor(<span class="reserved">private</span> meteoService: MeteoService) { }         <i class="conum" data-value="3"></i><b>(3)</b>
+
+  ngOnInit(): <span class="keyword">void</span> {}
+
+}</pre></td>
+</tr></table></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>déclaration de la dépendance à <code>MeteoService</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>ici, nous appelons le service de <em>meteoService</em>. Actuellement ce service n&#8217;exploite pas son paramètre, mais il en attend un quand même.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>déclaration d&#8217;un service qui sera injecté automatiquement par Angular, et automatiquement déclaré en tant qu&#8217;attribut privé (<em>property</em>) de la classe (2 en 1).</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+À ce niveau d&#8217;avancement, les précédents tests unitaires devraient tous passer. Vérifiez-le, et n&#8217;avancez pas plus loin tant que votre projet support n&#8217;est pas stabilisé.
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect2">
@@ -880,18 +1225,27 @@ Nous venons de réaliser un <strong><em>refactoring</em></strong>. C&#8217;est t
 <p>Dans l&#8217;interface <code>Temperature</code> nous ajoutons le nom de la ville concernée.</p>
 </div>
 <div class="listingblock">
-<div class="title">Listing 15. src/app/model/temperature.ts</div>
+<div class="title">Listing 17. src/app/model/temperature.ts</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="javascript"><table class="CodeRay"><tr>
   <td class="line-numbers"><pre>1
 2
 3
 4
+5
+6
+7
+8
 </pre></td>
   <td class="code"><pre><span class="reserved">export</span> <span class="reserved">interface</span> Temperature {
-  readonly temp : number
-  readonly city : string
-}</pre></td>
+    <span class="key">city_info</span>: {
+        <span class="key">name</span>: string
+    },
+    <span class="key">current_condition</span>: {
+        <span class="key">tmp</span>: number
+    }
+}
+</pre></td>
 </tr></table></code></pre>
 </div>
 </div>
@@ -899,7 +1253,7 @@ Nous venons de réaliser un <strong><em>refactoring</em></strong>. C&#8217;est t
 <p>et bien entendu, le composant présente cette valeur à l&#8217;utilisateur :</p>
 </div>
 <div class="listingblock">
-<div class="title">Listing 16. src/app/hello-world/hello-world.component.html</div>
+<div class="title">Listing 18. src/app/hello-world/hello-world.component.html</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="html"><table class="CodeRay"><tr>
   <td class="line-numbers"><pre>1
@@ -915,6 +1269,7 @@ Nous venons de réaliser un <strong><em>refactoring</em></strong>. C&#8217;est t
 11
 12
 13
+14
 </pre></td>
   <td class="code"><pre><span class="tag">&lt;style&gt;</span>
 <span class="inline"><span class="class">.box</span> {
@@ -927,20 +1282,20 @@ Nous venons de réaliser un <strong><em>refactoring</em></strong>. C&#8217;est t
 <span class="tag">&lt;div</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">box</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>
   <span class="tag">&lt;h2</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">title</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>Hello world !<span class="tag">&lt;/h2&gt;</span>
   <span class="tag">&lt;p&gt;</span>Nice day {{name}}.<span class="tag">&lt;/p&gt;</span>
-  <span class="tag">&lt;p&gt;</span>Today at {{temperature.city}} it is {{temperature.temp}}°<span class="tag">&lt;/p&gt;</span>
+   <span class="tag">&lt;p</span> <span class="attribute-name">id</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">tempcity</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span>Today it is {{temperature.current_condition.tmp}}° in {{temperature.city_info.name}}<span class="tag">&lt;/p&gt;</span>
+
 <span class="tag">&lt;/div&gt;</span></pre></td>
 </tr></table></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Fort heureusement TpyeScript étant typé, les erreurs révélées lors de la compilation vous guide
-vers les parties à mettre à jour suite à la modification de l&#8217;interface.</p>
+<p>Fort heureusement TypeScript étant typé, les erreurs révélées lors de la compilation vous guide vers les parties à mettre à jour suite à la modification de l&#8217;interface.</p>
 </div>
 <div class="paragraph">
 <p>Par exemple, nous ne manquerons pas de mettre à jour la structure de l&#8217;objet retourné par la méthode du service méto :</p>
 </div>
 <div class="listingblock">
-<div class="title">Listing 17. src/app/service/meteo/meteo.service.ts</div>
+<div class="title">Listing 19. src/app/service/meteo/meteo.service.ts</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="javascript"><table class="CodeRay"><tr>
   <td class="line-numbers"><pre>1
@@ -948,24 +1303,141 @@ vers les parties à mettre à jour suite à la modification de l&#8217;interface
 3
 4
 5
+6
+7
+8
+9
+10
+11
+12
+13
 </pre></td>
   <td class="code"><pre>[...]
 
- getTemperatureFromCity(city : string) : Temperature {
-    <span class="keyword">return</span> {<span class="key">city</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">Melun</span><span class="delimiter">&quot;</span></span>, <span class="key">temp</span> : <span class="integer">42</span>};
- }</pre></td>
+getTemperatureFromCity(city : string) : Observable&lt;Temperature&gt;  { <i class="conum" data-value="2"></i><b>(2)</b>
+    <span class="keyword">return</span> of(
+      {
+       <span class="key">city_info</span>: {
+        <span class="key">name</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">Melun</span><span class="delimiter">&quot;</span></span>,
+       },
+       <span class="key">current_condition</span>: {
+         <span class="key">tmp</span>: <span class="integer">42</span>
+       }
+      });
+  }
+</pre></td>
 </tr></table></code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>À ce moment des modifications, la suite de tests <code>HelloWorldComponent</code> devrait passer.</p>
+<div class="sect3">
+<h4 id="exercice-2"><a class="anchor" href="#exercice-2"></a>Exercice</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Modifier l&#8217;interface <code>Temperature</code> afin qu&#8217;elle détienne le nom du pays (voir le json reçu du service API).
+Bien entendu des modifications devront être apportées ici et là dans le code. Faire passer les tests.</p>
+</li>
+</ul>
 </div>
+</div>
+<div class="sect3">
+<h4 id="mise-à-jour-du-test-du-service-meteo"><a class="anchor" href="#mise-à-jour-du-test-du-service-meteo"></a>Mise à jour du test du service meteo</h4>
 <div class="paragraph">
-<p>Nous allons maintenant demander au service d&#8217;effectuer une requête http à la demande d&#8217;une température
-pour une ville donnée.</p>
+<p>Étant donné que l&#8217;interface du service à changer, nous devons maintenant modifier la logique de nos test unitaires, et déclarer une dépendance vers le service de meteo.</p>
 </div>
 <div class="listingblock">
-<div class="title">Listing 18. src/app/service/meteo/meteo.service.ts</div>
+<div class="title">Listing 20. meteo.service.spec.ts</div>
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="javascript"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+</pre></td>
+  <td class="code"><pre><span class="reserved">import</span> { TestBed } from <span class="string"><span class="delimiter">'</span><span class="content">@angular/core/testing</span><span class="delimiter">'</span></span>;
+<span class="reserved">import</span> { MeteoService } from <span class="string"><span class="delimiter">'</span><span class="content">./meteo.service</span><span class="delimiter">'</span></span>;  <i class="conum" data-value="1"></i><b>(1)</b>
+
+describe(<span class="string"><span class="delimiter">'</span><span class="content">MeteoService</span><span class="delimiter">'</span></span>, () =&gt; {
+ let service: MeteoService;
+
+  beforeEach(() =&gt; {
+    TestBed.configureTestingModule({
+      <span class="key">providers</span>: [MeteoService]
+    });
+    service = TestBed.inject(MeteoService);  <i class="conum" data-value="2"></i><b>(2)</b>
+  });
+
+  it(<span class="string"><span class="delimiter">'</span><span class="content">should be created</span><span class="delimiter">'</span></span>, () =&gt; {
+    expect(service).toBeTruthy();
+  });
+
+  it(<span class="string"><span class="delimiter">'</span><span class="content">city Melun - with 42 temperature</span><span class="delimiter">'</span></span>, () =&gt; {
+    let testUrl = service.getBaseUrl() + <span class="string"><span class="delimiter">&quot;</span><span class="content">/paris</span><span class="delimiter">&quot;</span></span>;
+
+    service.getTemperatureFromCity(<span class="string"><span class="delimiter">&quot;</span><span class="content">melun</span><span class="delimiter">&quot;</span></span>).subscribe(data =&gt; { <i class="conum" data-value="3"></i><b>(3)</b>
+      console.log(<span class="string"><span class="delimiter">&quot;</span><span class="content">TEST RECEIVE TEMP : </span><span class="delimiter">&quot;</span></span> + data?.current_condition?.tmp);
+      expect(data?.current_condition?.tmp).toEqual(<span class="integer">42</span>);
+      expect(data?.city_info?.name).toEqual(<span class="string"><span class="delimiter">&quot;</span><span class="content">Melun</span><span class="delimiter">&quot;</span></span>); <i class="conum" data-value="4"></i><b>(4)</b>
+
+    });
+
+  });</pre></td>
+</tr></table></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>: Déclaration de la dépendance au service meteo</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>: Demande d&#8217;instaticiation du service (on fournit ici une classe d&#8217;implémentation)</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>: Les tests sont réalisés à la réception normale de la réponse</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>: Dans l&#8217;hypothèse où vous avez réalisé l&#8217;exercice demandé ci-dessus.</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="appel-d-un-service-api-via-http"><a class="anchor" href="#appel-d-un-service-api-via-http"></a>Appel d&#8217;un service API via HTTP</h3>
+<div class="paragraph">
+<p>Nous allons maintenant demander au service de nous retourner une réponse à partir d&#8217;un appel à un service HTTP dont l&#8217;application devra dépendre. La réponse via un <code>Observable</code> s&#8217;explique par le fait que le retour du service dépend de facteurs externes : qualité de la bande passante, du réseau, disponibilité du service demandé, etc.</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing 21. src/app/service/meteo/meteo.service.ts</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="javascript"><table class="CodeRay"><tr>
   <td class="line-numbers"><pre>1
@@ -1001,7 +1473,7 @@ pour une ville donnée.</p>
 
   constructor(<span class="reserved">private</span> httpClient: HttpClient) { }          <i class="conum" data-value="1"></i><b>(1)</b>
 
-  getTemperatureFromCity(city: string): Observable&lt;any&gt; {  <i class="conum" data-value="2"></i><b>(2)</b>
+  getTemperatureFromCity(city : string) : Observable&lt;Temperature&gt;  { <i class="conum" data-value="2"></i><b>(2)</b>
     <span class="keyword">return</span> <span class="local-variable">this</span>.httpClient.get(<span class="local-variable">this</span>.getBaseUrl() + <span class="string"><span class="delimiter">&quot;</span><span class="content">/</span><span class="delimiter">&quot;</span></span> + city);
   }
 
@@ -1016,30 +1488,26 @@ pour une ville donnée.</p>
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Définition d&#8217;une dépendance à une instance de <code>HttpClient</code> afin de pouvoir lancer des requêtes HTTP
-depuis la logique de l&#8217;application.</td>
+<td>Définition d&#8217;un attribut (une instance de <code>HttpClient</code>) afin de pouvoir lancer des requêtes HTTP depuis la logique de l&#8217;application.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Lancement de la requête HTTP, qui retourne un objet de type <code>Observable</code> <em>non typé</em> ; si
-vous êtes sûr de la structure de la réponse, vous pouvez typer le résultat plus finement en mentionnant
-à la place de <em>any</em> le nom d&#8217;une classe ou d&#8217;une interface.</td>
+<td>Lancement de la requête HTTP, qui retourne un objet de type <code>Observable</code> typé.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>Afin de connaitre, dans les tests, l&#8217;url utilisée.</td>
+<td>On passe par une méthode pour obtenir l&#8217;url appelée, ce qui nous permettra de connaitre, dans les tests, l&#8217;url de l&#8217;API utilisée.</td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>Nous voici avec un service qui dépend d&#8217;un autre service avec appel asynchrone&#8230;&#8203; Pas simple à tester.</p>
+<p>Nous voici avec un service qui dépend d&#8217;un autre service&#8230;&#8203; Pas simple à tester.</p>
 </div>
 <div class="paragraph">
-<p>Heureusement, Angular vient avec des bibliothèques de classes dédiées à ce problème, qui nous permettra
-de simuler des requêtes HTTP.</p>
+<p>Heureusement, Angular vient avec des bibliothèques de classes dédiées à ce problème, qui nous permettra de simuler des requêtes HTTP.</p>
 </div>
 <div class="listingblock">
-<div class="title">Listing 19. src/app/service/meteo/meteo.service.spec.ts</div>
+<div class="title">Listing 22. src/app/service/meteo/meteo.service.spec.ts</div>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="javascript"><table class="CodeRay"><tr>
   <td class="line-numbers"><pre>1
@@ -1092,9 +1560,6 @@ de simuler des requêtes HTTP.</p>
 48
 49
 50
-51
-52
-53
 </pre></td>
   <td class="code"><pre><span class="reserved">import</span> { HttpTestingController, HttpClientTestingModule } from <span class="string"><span class="delimiter">'</span><span class="content">@angular/common/http/testing</span><span class="delimiter">'</span></span>;
 <span class="reserved">import</span> { TestBed } from <span class="string"><span class="delimiter">'</span><span class="content">@angular/core/testing</span><span class="delimiter">'</span></span>;
@@ -1119,33 +1584,30 @@ describe(<span class="string"><span class="delimiter">'</span><span class="conte
     expect(service).toBeTruthy();                         <i class="conum" data-value="3"></i><b>(3)</b>
   });
 
-  it(<span class="string"><span class="delimiter">'</span><span class="content">city known - Melun with temperature</span><span class="delimiter">'</span></span>, () =&gt; {
-    let testUrl = service.getBaseUrl() + <span class="string"><span class="delimiter">&quot;</span><span class="content">/melun</span><span class="delimiter">&quot;</span></span>;        <i class="conum" data-value="4"></i><b>(4)</b>
+   it(<span class="string"><span class="delimiter">'</span><span class="content">city Paris - with 10 temperature</span><span class="delimiter">'</span></span>, () =&gt; {
+    let testUrl = service.getBaseUrl() + <span class="string"><span class="delimiter">&quot;</span><span class="content">/paris</span><span class="delimiter">&quot;</span></span>; <i class="conum" data-value="4"></i><b>(4)</b>
 
-    service.getTemperatureFromCity(<span class="string"><span class="delimiter">&quot;</span><span class="content">melun</span><span class="delimiter">&quot;</span></span>).subscribe(data =&gt; {
-                                                                          <i class="conum" data-value="5"></i><b>(5)</b>
-      console.log(<span class="string"><span class="delimiter">&quot;</span><span class="content">TEST RECEIVE TEMP : </span><span class="delimiter">&quot;</span></span> + data?.current_condition?.temp);
-      expect(data?.current_condition?.temp).toBeGreaterThan(<span class="integer">10</span>);
-      expect(data?.city_info?.name).toEqual(<span class="string"><span class="delimiter">&quot;</span><span class="content">Melun</span><span class="delimiter">&quot;</span></span>);
+    let mockedResponse : Temperature = { <i class="conum" data-value="5"></i><b>(5)</b>
+      <span class="key">city_info</span>: {
+        <span class="key">name</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">Paris</span><span class="delimiter">&quot;</span></span>,
+        <span class="key">country</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">France</span><span class="delimiter">&quot;</span></span>
+      },
+      <span class="key">current_condition</span>: {
+        <span class="key">tmp</span>: <span class="integer">10</span>
+      }
+    };
+
+    service.getTemperatureFromCity(<span class="string"><span class="delimiter">&quot;</span><span class="content">paris</span><span class="delimiter">&quot;</span></span>).subscribe(data =&gt; {  <i class="conum" data-value="6"></i><b>(6)</b>
+      console.log(<span class="string"><span class="delimiter">&quot;</span><span class="content">TEST RECEIVE TEMP : </span><span class="delimiter">&quot;</span></span> + data?.current_condition?.tmp);
+      expect(data?.current_condition?.tmp).toEqual(<span class="integer">10</span>);
+      expect(data?.city_info?.name).toEqual(<span class="string"><span class="delimiter">&quot;</span><span class="content">Paris</span><span class="delimiter">&quot;</span></span>);
       expect(data?.city_info?.country).toEqual(<span class="string"><span class="delimiter">&quot;</span><span class="content">France</span><span class="delimiter">&quot;</span></span>);
     });
 
-    const req = mockHttpTestingController.expectOne(testUrl);
-    expect(req.request.method).toEqual(<span class="string"><span class="delimiter">'</span><span class="content">GET</span><span class="delimiter">'</span></span>);
-
-    let mockedResponse = {   <i class="conum" data-value="6"></i><b>(6)</b>
-        <span class="key">city_info</span>: {
-          <span class="key">name</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">Melun</span><span class="delimiter">&quot;</span></span>,
-          <span class="key">country</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">France</span><span class="delimiter">&quot;</span></span>
-        },
-        <span class="key">current_condition</span>: {
-          <span class="key">temp</span>: <span class="integer">13</span>
-        }
-    };
-
-    req.flush(mockedResponse); <i class="conum" data-value="7"></i><b>(7)</b>
-
-    mockHttpTestingController.verify();  <i class="conum" data-value="8"></i><b>(8)</b>
+    const req = mockHttpTestingController.expectOne(testUrl); <i class="conum" data-value="7"></i><b>(7)</b>
+    <span class="comment">// expect(req.request.method).toEqual('GET');</span>
+    req.flush(mockedResponse); <i class="conum" data-value="8"></i><b>(8)</b>
+    <span class="comment">// mockHttpTestingController.verify();</span>
   });
 
 });
@@ -1169,36 +1631,32 @@ describe(<span class="string"><span class="delimiter">'</span><span class="conte
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>Le url utilisées par le commosant et le mock http doivent être identiques</td>
+<td>Le url utilisées par le composant et le mock http doivent être identiques</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="5"></i><b>5</b></td>
-<td>Lorsque que la requête reçoit une réponse, les <em>souscripteurs</em> (les observateurs) en sont avisés.
-La donnée reçue est donnée comme argument (nommée <strong>data</strong>) de la fonction callback anonyme
-passée à la méthode <code>subscribe</code> : on peut donc ici coder les tests avec <code>expect</code>. On remarquera l&#8217;usage <code>?.</code> qui
-est une façon sûre (<em>safe</em>) de tenter d&#8217;atteindre un symbol dans une structure que
-nous ne maitrisons pas (rend <code>undefined</code> en cas d&#8217;échec). (voir <a href="https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-7.html" class="bare">https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-7.html</a>)</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="6"></i><b>6</b></td>
 <td>Construction des données simulant la réponse</td>
 </tr>
 <tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>Lorsque que la requête reçoit une réponse, les <em>souscripteurs</em> (les observateurs) en sont avisés. La donnée reçue est donnée comme argument (nommée <strong>data</strong>) de la fonction callback anonyme passée à la méthode <code>subscribe</code> : on peut donc ici coder les tests avec <code>expect</code>. On remarquera l&#8217;usage <code>?.</code> qui est une façon sûre (<em>safe</em>) de tenter d&#8217;atteindre un symbol dans une structure que nous ne maitrisons pas (rend <code>undefined</code> en cas d&#8217;échec). (voir <a href="https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-7.html" class="bare">https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-7.html</a>)</td>
+</tr>
+<tr>
 <td><i class="conum" data-value="7"></i><b>7</b></td>
-<td>Lance la réponse, <strong>ce qui déclenchera la méthode resolve de l&#8217;observable</strong> (<em>ses abonnés en seront avisés</em>)</td>
+<td>Début de lancement d&#8217;une requête HTTP</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="8"></i><b>8</b></td>
-<td>Vérifie qu&#8217;il n&#8217;y a pas de demandes en suspens.</td>
+<td>Injecte la réponse, <strong>ce qui déclenchera la méthode resolve de l&#8217;observable</strong> (<em>ses abonnés en seront avisés</em>)</td>
 </tr>
 </table>
 </div>
 </div>
 <div class="sect2">
 <h3 id="vérification"><a class="anchor" href="#vérification"></a>Vérification</h3>
-<div class="literalblock">
+<div class="listingblock">
 <div class="content">
-<pre>ng test --include=**/service/meteo/*.spec.ts</pre>
+<pre class="CodeRay highlight"><code> ng test --include=**/meteo.service.spec.ts</code></pre>
 </div>
 </div>
 <div class="imageblock">

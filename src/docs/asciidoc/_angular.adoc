@@ -47,8 +47,7 @@ Ces deux problèmes ont leur solution dans l'écosytème Angular.
 * Pour interpréter le rendu HTML du composant, on peut soit simuler le comportement d'un navigateur,
 soit faire directement appel à un navigateur.
 
-* Il est courant que l'instance de la classe TypeScript du composant utilise elle-même des
-services qui lui sont injectés, ce qui rend plus difficile l'instanciation de cette classe.
+* Il est courant que l'instance de la classe TypeScript du composant utilise des services injectés, ce qui rend plus difficile l'instanciation de cette classe.
 
 [quote, https://angular.io/guide/testing-components-scenarios]
 ____
@@ -59,12 +58,12 @@ Le but de la spécification est de tester le composant, pas le service, et les s
 Injecter le vrai service pourrait être un cauchemar. Le service réel peut demander à l'utilisateur des informations de connexion et tenter d'accéder à un serveur d'authentification. Ces comportements peuvent être difficiles à intercepter. Il est beaucoup plus facile et plus sûr de créer et d'enregistrer une doublure à la place du vrai service.
 ____
 
-`TestBed` est une classe de Angular, dont le rôle est de configurer et d'initialiser un
+NOTE:  `TestBed` est une classe de Angular, dont le rôle est de configurer et d'initialiser un
  environment pour les tests unitaires.
 
 == CLI ng et frameworks de test
 
-Par défaut (2020/2021), Angular CLI génère du code de test basé sur _Jasmine_ et _Karma_.
+Par défaut (2021/2022), Angular CLI génère du code de test basé sur _Jasmine_ et _Karma_.
 
 - Jasmine, un framework open source pour les tests unitaire en JS : https://jasmine.github.io/
 
@@ -79,29 +78,67 @@ composant et portant le nom du composant postfixé par `.spec.ts`.
 
 On se réfèrera également aux fichiers de configuration à la racine du projet : `angular.json` et `karma.json`
 
-== Exemple Hello world !
+== Création de l'application
 
-Afin d'illustrer les instructions de test, nous créons, dans un projet servant d'exemple
-et via CLI ng, un composant que nous nommerons `hello-word`.
-
-.génération d'un composant à l'aide de cli ng
+.génération du projet basique à l'aide de cli ng
 [source, bash]
 ----
-$ ng generate component HelloWorld
-CREATE src/app/hello-world/hello-world.component.scss (0 bytes)
-CREATE src/app/hello-world/hello-world.component.html (26 bytes)
-CREATE src/app/hello-world/hello-world.component.spec.ts (655 bytes)
-CREATE src/app/hello-world/hello-world.component.ts (295 bytes)
-UPDATE src/app/app.module.ts (690 bytes)
+$ ng new projet-demo
+? Would you like to add Angular routing? No
+? Which stylesheet format would you like to use? CSS
+[...]
+✔ Packages installed successfully.
+    Successfully initialized git
 $
 ----
 
-Modifions le template :
+On installe un framework `css` :
+
+----
+npm install bulma --save
+----
+puis mettons a jour `composer.json`:
+
+----
+ "styles": [
+   "node_modules/bulma/css/bulma.min.css",
+   "src/styles.css"
+ ],
+----
+
+
+== Composant Hello world !
+
+Afin d'illustrer les instructions de test, nous créons, dans le projet demo, un composant que nous nommerons `hello-world` qui, en plus de ire bonjour nous donnera la température du jour.
+
+[source, bash]
+----
+.génération d'un composant à l'aide de cli ng
+$ ng generate component HelloWorld
+CREATE src/app/hello-world/hello-world.component.css (0 bytes)
+CREATE src/app/hello-world/hello-world.component.html (26 bytes)
+CREATE src/app/hello-world/hello-world.component.spec.ts (655 bytes)
+CREATE src/app/hello-world/hello-world.component.ts (294 bytes)
+UPDATE src/app/app.module.ts (414 bytes)
+$
+----
+
+Modifions le template du composant :
 [source, html]
 ----
-<h2 class="title">Hello world !</h2>
-<p>Nice day {{name}}.</p>
-<p>Today it is {{temperature.temp}}°</p>
+<style>
+ .box {
+   box-shadow: inset 0 0 1em white, 0 0 .5em black;
+   text-align: center;
+   width: 200px;
+ }
+</style>
+
+<div class="box">
+    <h2 class="title">Hello world !</h2>
+    <p>Nice day {{name}}.</p>
+    <p>Today it is {{temperature.current_condition.tmp}}°</p>
+</div>
 ----
 
 Et le code lié :
@@ -111,12 +148,18 @@ Et le code lié :
 ----
 import { Component, OnInit } from '@angular/core';
 
-// une interface est un modèle de structure d'objet.
-// Tout objet (ou classe) se référent à cette interface devra implémenter
-// ce modèle.
-interface Temperature {
-  readonly temp : number
-}
+/// une interface est un modèle de structure d'objet (un type personnalisé)
+// Tout objet (ou classe) se référent à cette interface
+// devra, au moins, implémenter ce modèle (basé sur un API vue plus loin)
+ interface Temperature {
+   city_info: {
+     name: string
+     country: string
+    },
+    current_condition: {
+     tmp: number
+    }
+ }
 
 @Component({
   selector: 'app-hello-world',
@@ -125,8 +168,18 @@ interface Temperature {
 })
 export class HelloWorldComponent implements OnInit {
 
+  // attributs de la classe
   name : string = "unknown";
-  temperature : Temperature = {temp : 42};
+
+  temperature: Temperature = {
+    city_info: {
+      name: "Melun",
+      country: "France"
+    },
+    current_condition: {
+      tmp: 42
+    }
+  };
 
   constructor() { }
 
@@ -135,7 +188,7 @@ export class HelloWorldComponent implements OnInit {
 }
 ----
 
-Le composant principal, parent de notre composant, `app.component.html` (avec des classes CSS de bulma) :
+Le template `app.component.html`, du composant principal, utilise notre composant, (avec des classes CSS de bulma) :
 
 .app.component.html
 [source, html]
@@ -148,19 +201,20 @@ Le composant principal, parent de notre composant, `app.component.html` (avec de
 <section class="section centre">
   <div class="container">
     <div class="column ">
-      <app-hello-world></app-hello-world>
+      <app-hello-world></app-hello-world> <1>
     </div>
   </div>
 </section>
 ----
+<1>: Le composant `HelloWorldComponent` est un composant enfant de `AppComponent`.
 
 à l'exécution nous obtenons :
 
 image::hello-world-1.png[hello world avec temperature]
 
-== <component>.spec.ts initial
+== <component>.spec.ts
 
-Via la commande `ng generate component HelloWorld` un script de test est généré : `hello-world.component.spec.ts`.
+Lorsque nous avons demandé la création du composant `HelloWorld` par la commande  `ng generate component HelloWorld`, un script de test est généré : `hello-world.component.spec.ts`.
 
 Dans un premier nous analysons le code généré, puis l'étendrons par ajout de nouveaux tests.
 
@@ -197,22 +251,45 @@ describe('HelloWorldComponent', () => {     <2>
 
 
 <1> Import de librairies Angular dédiées aux tests
-<2> Donne un nom à la portée des différents tests _it('xxx')_ définis dans ce block, connu sous le nom de **suite** (ou _test suite_)
-<3> `beforeEach` : Pour définir les actions à exécuter *avant* chacun des tests dans cette suite.
+<2> Donne un nom (`HelloWorldComponent`) à la portée des différents tests _it('xxx')_ définis dans ce block, connu sous le nom de **suite** (ou _test suite_)
+<3> `beforeEach` : Pour définir les actions à exécuter *avant* chacun des tests dans cette suite, ce qui assure l'indépendance entre les tests.
 <4> Déclaration et compilation du composant (CUT - _Component Under Test_).
 L'appel de la méthode static `configureTestingModule` de `TestBed` est asynchrone (*promise*), nous demandons d'attendre son
 retour (`await`) avant créer le composant à l'étape suivante.
 <5> Initialisation du contexte (instanciation du composant et son contexte)
-<6> Vérifie que la variable locale _component_ a bien été initialisée
-<7> `toBeTruthy` vérifie que `component` est "not undefined". Une instruction de test de **Jasmine**.
+<6> Vérifie que la variable locale _component_ a bien été initialisée. Les instructions du test sont placées dans le corps d'une fonction anonyme.
+<7> `toBeTruthy` vérifie que `component` est "_not undefined_". Une instruction de test de **Jasmine**.
 
 == Lancement des tests
 
 La commande CLI pour le lancement des tests est : `ng test`
 
-Pour lancer une suite ciblée de tests, la syntaxe consiste à utiliser l'option `include` au lancement :
+Cette commande fera échouer le test nommé  : `should render title'` de `app.component.spec.ts`. Ceci est tout à fait normal car nous avons supprimé le comportement par défaut du template du composant principal.
 
-`ng test --include=\**/someFolder/*.spec.ts`
+Pour résoudre ce problème, mettre en commentaire le test unitiare en question  :
+
+.app.component.spec.ts
+[source,typescript,linums]
+----
+[...]
+
+/*
+it('should render title', () => {
+  const fixture = TestBed.createComponent(AppComponent);
+  fixture.detectChanges();
+  const compiled = fixture.nativeElement as HTMLElement;
+  expect(compiled.querySelector('.content span')?.textContent).toContain('projet-demo app is running!');
+});
+*/
+
+----
+
+
+Pour lancer une suite ciblée de tests, la syntaxe consiste à utiliser l'option `include` au lancement : `ng test --include=\**/someFolder/*.spec.ts`
+
+Nous lancerons donc le seul test actuel :
+
+`ng test --include=\**/hello-world/*.spec.ts`
 
 .ng test --include=\**/hello-world/*.spec.ts
 [source,angular2]
@@ -257,7 +334,7 @@ Vérification de l'état de l'instance gérant les données du modèle
   });
 ----
 
-<1> _"defaut name"_ est le nom de la spec
+<1> _"defaut name"_ est le nom du test, comme une variable ou une méthode, son nom doit clairement communiquer son objectif.
 <2> Vérifie la valeur de la propriété _name_ de l'objet référencé par _component_
 
 Nous ferons de meme avec la température
@@ -268,18 +345,17 @@ Nous ferons de meme avec la température
   [...]
 
   it('default temperature', () => {
-    expect(component.temperature.temp).toBe(42); <1>
+    expect(component.temperature.current_condition.tmp).toBe(42); <1>
   });
 ----
 
-<1> La temperature étant représentée par un objet, nous accédons ici directement
-à sa propriété public _temp_ (qui est en lecture seule)
+<1> La temperature étant représentée par un objet, nous accédons ici directement à sa propriété public _current_condition.tmp_
 
 Vérification (_karma_ est normalement toujours actif, et relance les tests après chaque nouvelle compilation)
 
 image::run-test-suite-3.png[3 scénarios de tests]
 
-Nous pouvons vérifier si le composant réagit bien aux changements de valeur de certains de ses propriétés :
+Nous allons maintenant vérifier que le composant réagit bien aux changements de valeur de certains de ses propriétés :
 
 .vérifier la possibilité de changer 'name'
 [source, javascript]
@@ -317,6 +393,23 @@ revisiter des ressources web sur ce sujet, et de s'améliorer !
 voir par exemple https://developer.mozilla.org/fr/docs/Apprendre/CSS/Building_blocks/Selectors[developer.mozilla Apprendre CSS/Selector] et
 https://css-tricks.com/almanac/selectors/f/first-of-type/[first-of-type selector]
 
+
+[NOTE]
+====
+Nous vous invitons à tester en placant un identifiant d'élément du DOM dans le template du composant, comme par exemple :
+
+```js
+<p id="hello">Nice day {{name}}.</p>
+```
+
+Dans ce cas, le texte de l'élément est atteint sans ambiguité ainsi :
+
+```js
+rootElt.querySelector("#hello").textContent;
+```
+====
+
+
 Voici un autre test qui vérifie la réactivité de la vue face à un changement de son modèle (instance de la classe du composant).
 
 .it - view update name
@@ -336,18 +429,16 @@ it('view update name', () => {
 
 === Exercice
 
-* Concevoir une nouvelle spécification (un nouveau test unitaire) qui vérifie que la température
-présentée par le composant est bien celle attendue.
+* Concevoir une nouvelle spécification (un nouveau test unitaire automatisé) qui vérifie que la température présentée par le composant est bien celle attendue.
 
 == Evolution du composant
 
-Recherche d'un service API de requête de température. Il en existe de nombreux, nécessitant la plupart du temps
-une clé d'accès, et un abonnement au service.
+Recherche d'un service API de requête de température. Il en existe de nombreux, nécessitant la plupart du temps une clé d'accès, et un abonnement au service.
 
 Pour les besoins de ce support, nous utiliserons le service
 proposé par https://www.prevision-meteo.ch[prevision-meteo.ch].
 
-Testez par vous-même : https://www.prevision-meteo.ch/services/json/melun[infos ville de Melun 77000 France]
+TIP: Testez par vous-même avec un navigateur, et consulter le **format JSON** de la réponse : https://www.prevision-meteo.ch/services/json/melun[infos ville de Melun 77000 France]
 
 === Paramètre de l'application
 
@@ -355,7 +446,7 @@ Nous allons définir un service sous forme d'une classe qui aura la charge de no
 
 Pour cela nous commençons par ajouter une classe qui contiendra des données globales, comme l'url de l'API météo.
 
- $ ngenerate class GlobalConstants
+ $ ng generate class GlobalConstants
 
 .global-constant.ts
 [source, javascript]
@@ -365,8 +456,8 @@ export class GlobalConstants {
 }
 ----
 
-Il est logique que le service météo nous retourne une instance de `Temperature`.
-Ce type mérite donc d'être déclaré dans un fichier à part. Nous le placerons dans un dossier nommée `model` :
+Il serait logique que le service météo nous retourne une instance de `Temperature`.
+Ce type mérite donc d'être déclaré dans un fichier à part. Nous le placerons dans un dossier nommé `model` :
 
  ng generate interface Temperature  --path=src/app/model
 
@@ -374,12 +465,16 @@ Ce type mérite donc d'être déclaré dans un fichier à part. Nous le placeron
 [source, js]
 ----
 export interface Temperature {
-  readonly temp : number
+    current_condition: {
+        tmp: number
+    }
 }
+
 ----
 
-Parallèlement, nous supprimons la définition de `Temperature` dans `hello-world.component.ts`, et
-déclarons à la place une dépendance, plus quelques aménagements *temporaires* expliqués ci-après.
+NOTE: Définir une interface c'est renforcer la cohérence de type dans votre programme et permettre à TypeScript de détecter des erreurs à la conception (lors de la compilation, donc bien avant l'exécution).
+
+Parallèlement, nous supprimons la définition de `Temperature` dans `hello-world.component.ts`, et déclarons à la place une dépendance, plus quelques aménagements *temporaires* expliqués ci-après.
 Le but de ces aménagements temporaires est de faire passer les tests unitaires actuels :
 
 .hello-world.component.ts
@@ -387,7 +482,91 @@ Le but de ces aménagements temporaires est de faire passer les tests unitaires 
 ----
 import { Component, Input, OnInit } from '@angular/core';
 import { Temperature } from '../model/temperature';
-import { MeteoService } from '../service/meteo/meteo.service';
+
+@Component({
+  selector: 'app-hello-world',
+  templateUrl: './hello-world.component.html',
+  styleUrls: ['./hello-world.component.scss']
+})
+export class HelloWorldComponent implements OnInit {
+  // attributs de la classe
+  @Input() name: string = "unknown";
+
+  temperature: Temperature = {
+    current_condition: {
+      tmp: 42
+    }
+  };
+
+  constructor() { }
+
+  ngOnInit(): void {}
+
+}
+----
+
+IMPORTANT: À ce niveau d'avancement, les précédents tests unitaires devraient tous passer. Vérifiez-le, et n'avancez pas plus loin tant que votre projet support n'est pas stabilisé.
+
+NOTE: Nous venons de réaliser un *_refactoring_*. C'est très souvent le prix à payer pour favoriser les évolutions à venir.
+
+== Création d'un service de météo
+
+Dans un premier, arrêtez l'exécution automatique des tests de `hello-world.component`, car les modifications que nous allons apporter à notre composant casseront la logique de ces tests, que nous corrigerons ensuite. (`CTRL+c dans le terminal où a été lancé la commande`)
+
+Nous allons créer un service qui va interroger l'API météo. Nous découpons ce refactoring en deux parties :
+
+. Conception de la classe du service, puis test d'utilisation
+
+. Appel du service distant via son API avec retour JSON
+
+
+Nous placerons ce service dans une classe dédiée (via `cli ng`) :
+
+```bash
+ ng generate service Meteo --flat=false --path=src/app/service
+```
+
+.src/app/service/meteo/meteo.service.ts
+[source, javascript, numbers]
+----
+
+import { Injectable } from '@angular/core';
+import { Observable, of } from 'rxjs';
+import { Temperature } from 'src/app/model/temperature';
+
+@Injectable({
+ providedIn: 'root'  <1>
+})
+
+export class MeteoService {
+
+  // retourne toujours le même objet observable, pour commencer
+  getTemperatureFromCity(city : string) : Observable<Temperature>  { <2>
+    return of(
+      {
+       current_condition: {
+         tmp: 42
+       }
+      });
+  }
+
+  constructor() { }
+}
+----
+
+<1> Cet attribut du décorateur (annotation) `@Injectable` spécifie que le composant est injectable sur l'ensemble de l'application
+<2> Remarquez que l'objet `Observable` retourné est bien compatible avec l'interface `Temperature` (le type de la méthode)
+
+NOTE: Nous passons par un objet `Observable` car l'appel de l'API (à venir) est suceptible d'échouer.
+
+Puis nous déclarons l'utiliser dans le composant `HelloWorldComponent`.
+
+.hello-world.component.ts
+[source, javascript, numbers]
+----
+import { Component, Input, OnInit } from '@angular/core';
+import { Temperature } from '../model/temperature';
+import { MeteoService } from '../service/meteo/meteo.service'; <1>
 
 @Component({
   selector: 'app-hello-world',
@@ -398,8 +577,25 @@ export class HelloWorldComponent implements OnInit {
 
   @Input() name: string = "unknown";
 
-  public get temperature(): Temperature {                     <1>
-    return this.meteoService.getTemperatureFromCity("Melun"); <2>
+   myObserver = {
+    next: (data: Temperature) => {
+      if (data?.current_condition?.tmp) {
+        this.temperature.current_condition.tmp = data.current_condition.tmp;
+      } else {
+        this.temperature.current_condition.tmp = -42;
+      }
+    }
+    ,
+    error: (err: Error) => console.error('Observer got an error: ' + err),
+    complete: () => console.log('Observer got a complete notification'),
+  }
+
+  public getActualTemperature() {
+    // La méthode getTemperatureFromCity retourne un Observable,
+    // Nous nous abonnons en tant qu'observateur, via un objet dédié.
+    // Voir https://angular.io/guide/observables
+    let cityName : string = "melun";
+    this.meteoService.getTemperatureFromCity(cityName).subscribe(this.myObserver);<2>
   }
 
   constructor(private meteoService: MeteoService) { }         <3>
@@ -408,40 +604,11 @@ export class HelloWorldComponent implements OnInit {
 
 }
 ----
+<1>  déclaration de la dépendance à `MeteoService`
+<2>  ici, nous appelons le service de _meteoService_. Actuellement ce service n'exploite pas son paramètre, mais il en attend un quand même.
+<3>  déclaration d'un service qui sera injecté automatiquement par Angular, et automatiquement déclaré en tant qu'attribut privé (_property_) de la classe (2 en 1).
 
-<1>  un _getter_ est un accesseur automatique (c'est du js). Chaque accès en lecture à _temperature_ (sans parenthèses en fin) passera par le code de ce _get_.
-<2>  ici, nous appelons le service de _meteoService_.
-<3>  déclaration d'un service qui sera injecté automatiquement par Angular, en tant qu'attribut privé (_property_) de la classe.
-
-=== Début de creation du service météo (première version)
-
-Nous placerons ce service dans un dossier dédié (via `cli ng`) :
-
- ng generate service Meteo --flat=false --path=src/app/service
-
-.src/app/service/meteo/meteo.service.ts
-[source, javascript, numbers]
-----
-
-import { Injectable } from '@angular/core';
-import { Temperature } from 'src/app/model/temperature';
-
-@Injectable({
- providedIn: 'root'
-})
-export class MeteoService {
-
-  getTemperatureFromCity(city : string) : Temperature {
-    return {temp : 42};
-  }
-
-  constructor() { }
-}
-----
-
-À ce niveau d'avancement, les précédents tests unitaires devraient tous passer.
-
-IMPORTANT: Nous venons de réaliser un *_refactoring_*. C'est très souvent le pris à payer pour favoriser les évolutions à venir.
+TIP: À ce niveau d'avancement, les précédents tests unitaires devraient tous passer. Vérifiez-le, et n'avancez pas plus loin tant que votre projet support n'est pas stabilisé.
 
 == Update de l'interface Temperature
 
@@ -451,9 +618,14 @@ Dans l'interface `Temperature` nous ajoutons le nom de la ville concernée.
 [source, javascript, numbers]
 ----
 export interface Temperature {
-  readonly temp : number
-  readonly city : string
+    city_info: {
+        name: string
+    },
+    current_condition: {
+        tmp: number
+    }
 }
+
 ----
 
 et bien entendu, le composant présente cette valeur à l'utilisateur :
@@ -472,12 +644,12 @@ et bien entendu, le composant présente cette valeur à l'utilisateur :
 <div class="box">
   <h2 class="title">Hello world !</h2>
   <p>Nice day {{name}}.</p>
-  <p>Today at {{temperature.city}} it is {{temperature.temp}}°</p>
+   <p id="tempcity">Today it is {{temperature.current_condition.tmp}}° in {{temperature.city_info.name}}</p>
+
 </div>
 ----
 
-Fort heureusement TpyeScript étant typé, les erreurs révélées lors de la compilation vous guide
-vers les parties à mettre à jour suite à la modification de l'interface.
+Fort heureusement TypeScript étant typé, les erreurs révélées lors de la compilation vous guide vers les parties à mettre à jour suite à la modification de l'interface.
 
 Par exemple, nous ne manquerons pas de mettre à jour la structure de l'objet retourné par la méthode du service méto :
 
@@ -487,15 +659,69 @@ Par exemple, nous ne manquerons pas de mettre à jour la structure de l'objet re
 ----
 [...]
 
- getTemperatureFromCity(city : string) : Temperature {
-    return {city: "Melun", temp : 42};
- }
+getTemperatureFromCity(city : string) : Observable<Temperature>  { <2>
+    return of(
+      {
+       city_info: {
+        name: "Melun",
+       },
+       current_condition: {
+         tmp: 42
+       }
+      });
+  }
+
 ----
 
-À ce moment des modifications, la suite de tests `HelloWorldComponent` devrait passer.
+=== Exercice
 
-Nous allons maintenant demander au service d'effectuer une requête http à la demande d'une température
-pour une ville donnée.
+* Modifier l'interface `Temperature` afin qu'elle détienne le nom du pays (voir le json reçu du service API).
+Bien entendu des modifications devront être apportées ici et là dans le code. Faire passer les tests.
+
+=== Mise à jour du test du service meteo
+
+Étant donné que l'interface du service à changer, nous devons maintenant modifier la logique de nos test unitaires, et déclarer une dépendance vers le service de meteo.
+
+.meteo.service.spec.ts
+[source, javascript, numbers]
+----
+import { TestBed } from '@angular/core/testing';
+import { MeteoService } from './meteo.service';  <1>
+
+describe('MeteoService', () => {
+ let service: MeteoService;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [MeteoService]
+    });
+    service = TestBed.inject(MeteoService);  <2>
+  });
+
+  it('should be created', () => {
+    expect(service).toBeTruthy();
+  });
+
+  it('city Melun - with 42 temperature', () => {
+    let testUrl = service.getBaseUrl() + "/paris";
+
+    service.getTemperatureFromCity("melun").subscribe(data => { <3>
+      console.log("TEST RECEIVE TEMP : " + data?.current_condition?.tmp);
+      expect(data?.current_condition?.tmp).toEqual(42);
+      expect(data?.city_info?.name).toEqual("Melun"); <4>
+
+    });
+
+  });
+----
+<1> : Déclaration de la dépendance au service meteo
+<2> : Demande d'instaticiation du service (on fournit ici une classe d'implémentation)
+<3> : Les tests sont réalisés à la réception normale de la réponse
+<4> : Dans l'hypothèse où vous avez réalisé l'exercice demandé ci-dessus.
+
+== Appel d'un service API via HTTP
+
+Nous allons maintenant demander au service de nous retourner une réponse à partir d'un appel à un service HTTP dont l'application devra dépendre. La réponse via un `Observable` s'explique par le fait que le retour du service dépend de facteurs externes : qualité de la bande passante, du réseau, disponibilité du service demandé, etc.
 
 .src/app/service/meteo/meteo.service.ts
 [source, javascript, numbers]
@@ -512,7 +738,7 @@ export class MeteoService {
 
   constructor(private httpClient: HttpClient) { }          <1>
 
-  getTemperatureFromCity(city: string): Observable<any> {  <2>
+  getTemperatureFromCity(city : string) : Observable<Temperature>  { <2>
     return this.httpClient.get(this.getBaseUrl() + "/" + city);
   }
 
@@ -522,17 +748,14 @@ export class MeteoService {
 }
 ----
 
-<1> Définition d'une dépendance à une instance de `HttpClient` afin de pouvoir lancer des requêtes HTTP
-depuis la logique de l'application.
-<2> Lancement de la requête HTTP, qui retourne un objet de type `Observable` _non typé_ ; si
-vous êtes sûr de la structure de la réponse, vous pouvez typer le résultat plus finement en mentionnant
-à la place de _any_ le nom d'une classe ou d'une interface.
-<3> Afin de connaitre, dans les tests, l'url utilisée.
+<1> Définition d'un attribut (une instance de `HttpClient`) afin de pouvoir lancer des requêtes HTTP depuis la logique de l'application.
+<2> Lancement de la requête HTTP, qui retourne un objet de type `Observable` typé.
+<3> On passe par une méthode pour obtenir l'url appelée, ce qui nous permettra de connaitre, dans les tests, l'url de l'API utilisée.
 
-Nous voici avec un service qui dépend d'un autre service avec appel asynchrone... Pas simple à tester.
 
-Heureusement, Angular vient avec des bibliothèques de classes dédiées à ce problème, qui nous permettra
-de simuler des requêtes HTTP.
+Nous voici avec un service qui dépend d'un autre service... Pas simple à tester.
+
+Heureusement, Angular vient avec des bibliothèques de classes dédiées à ce problème, qui nous permettra de simuler des requêtes HTTP.
 
 .src/app/service/meteo/meteo.service.spec.ts
 [source, javascript, numbers]
@@ -560,33 +783,30 @@ describe('MeteoService', () => {
     expect(service).toBeTruthy();                         <3>
   });
 
-  it('city known - Melun with temperature', () => {
-    let testUrl = service.getBaseUrl() + "/melun";        <4>
+   it('city Paris - with 10 temperature', () => {
+    let testUrl = service.getBaseUrl() + "/paris"; <4>
 
-    service.getTemperatureFromCity("melun").subscribe(data => {
-                                                                          <5>
-      console.log("TEST RECEIVE TEMP : " + data?.current_condition?.temp);
-      expect(data?.current_condition?.temp).toBeGreaterThan(10);
-      expect(data?.city_info?.name).toEqual("Melun");
+    let mockedResponse : Temperature = { <5>
+      city_info: {
+        name: "Paris",
+        country: "France"
+      },
+      current_condition: {
+        tmp: 10
+      }
+    };
+
+    service.getTemperatureFromCity("paris").subscribe(data => {  <6>
+      console.log("TEST RECEIVE TEMP : " + data?.current_condition?.tmp);
+      expect(data?.current_condition?.tmp).toEqual(10);
+      expect(data?.city_info?.name).toEqual("Paris");
       expect(data?.city_info?.country).toEqual("France");
     });
 
-    const req = mockHttpTestingController.expectOne(testUrl);
-    expect(req.request.method).toEqual('GET');
-
-    let mockedResponse = {   <6>
-        city_info: {
-          name: "Melun",
-          country: "France"
-        },
-        current_condition: {
-          temp: 13
-        }
-    };
-
-    req.flush(mockedResponse); <7>
-
-    mockHttpTestingController.verify();  <8>
+    const req = mockHttpTestingController.expectOne(testUrl); <7>
+    // expect(req.request.method).toEqual('GET');
+    req.flush(mockedResponse); <8>
+    // mockHttpTestingController.verify();
   });
 
 });
@@ -596,19 +816,19 @@ describe('MeteoService', () => {
 <1> Déclaration d'une référence à une instance de mock http
 <2> Demande d'injection et récupération de l'instance
 <3> Le service existe t'il ?
-<4> Le url utilisées par le commosant et le mock http doivent être identiques
-<5> Lorsque que la requête reçoit une réponse, les _souscripteurs_ (les observateurs) en sont avisés.
-La donnée reçue est donnée comme argument (nommée *data*) de la fonction callback anonyme
-passée à la méthode `subscribe` : on peut donc ici coder les tests avec `expect`. On remarquera l'usage `?.` qui
-est une façon sûre (_safe_) de tenter d'atteindre un symbol dans une structure que
-nous ne maitrisons pas (rend `undefined` en cas d'échec). (voir https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-7.html)
-<6> Construction des données simulant la réponse
-<7> Lance la réponse, *ce qui déclenchera la méthode resolve de l'observable* (__ses abonnés en seront avisés__)
-<8> Vérifie qu'il n'y a pas de demandes en suspens.
+<4> Le url utilisées par le composant et le mock http doivent être identiques
+<5> Construction des données simulant la réponse
+<6> Lorsque que la requête reçoit une réponse, les _souscripteurs_ (les observateurs) en sont avisés. La donnée reçue est donnée comme argument (nommée *data*) de la fonction callback anonyme passée à la méthode `subscribe` : on peut donc ici coder les tests avec `expect`. On remarquera l'usage `?.` qui est une façon sûre (_safe_) de tenter d'atteindre un symbol dans une structure que nous ne maitrisons pas (rend `undefined` en cas d'échec). (voir https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-7.html)
+
+<7> Début de lancement d'une requête HTTP
+<8> Injecte la réponse, *ce qui déclenchera la méthode resolve de l'observable* (__ses abonnés en seront avisés__)
 
 == Vérification
 
- ng test --include=**/service/meteo/*.spec.ts
+[source]
+----
+ ng test --include=**/meteo.service.spec.ts
+----
 
 image::run-test-suite-service.png[run-test-suite]
 
