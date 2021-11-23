@@ -150,12 +150,8 @@ import { Component, OnInit } from '@angular/core';
 
 /// une interface est un modèle de structure d'objet (un type personnalisé)
 // Tout objet (ou classe) se référent à cette interface
-// devra, au moins, implémenter ce modèle (basé sur un API vue plus loin)
+// devra, au moins, implémenter ce modèle (basé sur une API vue plus loin)
  interface Temperature {
-   city_info: {
-     name: string
-     country: string
-    },
     current_condition: {
      tmp: number
     }
@@ -355,7 +351,7 @@ Vérification (_karma_ est normalement toujours actif, et relance les tests apr�
 
 image::run-test-suite-3.png[3 scénarios de tests]
 
-Nous allons maintenant vérifier que le composant réagit bien aux changements de valeur de certains de ses propriétés :
+Nous allons maintenant vérifier que le composant réagit bien aux changements de valeur de certaines de ses propriétés :
 
 .vérifier la possibilité de changer 'name'
 [source, javascript]
@@ -466,7 +462,7 @@ Ce type mérite donc d'être déclaré dans un fichier à part. Nous le placeron
 ----
 export interface Temperature {
     current_condition: {
-        tmp: number
+     tmp: number
     }
 }
 
@@ -840,7 +836,7 @@ via une méthodologie basée sur le refactoring.
 
 === Exercices
 
-* Modifier l'interface `Temperature` afin qu'elle détienne le nom du pays (voir le json reçu du service API).
+* Si ce n'est pas encore fait, modifier l'interface `Temperature` afin qu'elle détienne le nom du pays (voir le json reçu du service API).
 Bien entendu des modifications devront être apportées ici et là dans le code. Faire passer les tests.
 
 * Modifier de nouveau l'interface `Temperature` afin de présenter la température *maximale* et la *minimale* du jour.

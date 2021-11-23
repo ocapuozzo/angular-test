@@ -1,7 +1,7 @@
 = Test unitaire
 O. Capuozzo
-v1.0, 2020-11-25: Version asciidoc
-:description: support de cours test unitaire
+v1.1, 2021-11-18: Version asciidoc - licence libre
+:description: support de cours sur les tests unitaires avec Angular
 :icons: font
 :listing-caption: Listing
 :toc-title: Table des matieres

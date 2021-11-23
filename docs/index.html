@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.6.1">
-<meta name="description" content="support de cours test unitaire">
+<meta name="description" content="support de cours sur les tests unitaires avec Angular">
 <meta name="author" content="O. Capuozzo">
 <title>Test unitaire</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
@@ -18,9 +18,9 @@
 <h1>Test unitaire</h1>
 <div class="details">
 <span id="author" class="author">O. Capuozzo</span><br>
-<span id="revnumber">version 1.0,</span>
-<span id="revdate">2020-11-25</span>
-<br><span id="revremark">Version asciidoc</span>
+<span id="revnumber">version 1.1,</span>
+<span id="revdate">2021-11-18</span>
+<br><span id="revremark">Version asciidoc - licence libre</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table des matieres</div>
@@ -359,21 +359,13 @@ $</code></pre>
 34
 35
 36
-37
-38
-39
-40
 </pre></td>
   <td class="code"><pre><span class="reserved">import</span> { Component, OnInit } from <span class="string"><span class="delimiter">'</span><span class="content">@angular/core</span><span class="delimiter">'</span></span>;
 
 <span class="comment">/// une interface est un modèle de structure d'objet (un type personnalisé)</span>
 <span class="comment">// Tout objet (ou classe) se référent à cette interface</span>
-<span class="comment">// devra, au moins, implémenter ce modèle (basé sur un API vue plus loin)</span>
+<span class="comment">// devra, au moins, implémenter ce modèle (basé sur une API vue plus loin)</span>
  <span class="reserved">interface</span> Temperature {
-   <span class="key">city_info</span>: {
-     <span class="key">name</span>: string
-     country: string
-    },
     <span class="key">current_condition</span>: {
      <span class="key">tmp</span>: number
     }
@@ -693,7 +685,7 @@ puis nous ferons évoluer le composant afin qu&#8217;il s&#8217;appuie sur un se
 </div>
 </div>
 <div class="paragraph">
-<p>Nous allons maintenant vérifier que le composant réagit bien aux changements de valeur de certains de ses propriétés :</p>
+<p>Nous allons maintenant vérifier que le composant réagit bien aux changements de valeur de certaines de ses propriétés :</p>
 </div>
 <div class="listingblock">
 <div class="title">Listing 9. vérifier la possibilité de changer 'name'</div>
@@ -896,7 +888,7 @@ Ce type mérite donc d&#8217;être déclaré dans un fichier à part. Nous le pl
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="js"><span class="reserved">export</span> <span class="reserved">interface</span> Temperature {
     <span class="key">current_condition</span>: {
-        <span class="key">tmp</span>: number
+     <span class="key">tmp</span>: number
     }
 }</code></pre>
 </div>
@@ -1676,7 +1668,7 @@ via une méthodologie basée sur le refactoring.</p>
 <div class="ulist">
 <ul>
 <li>
-<p>Modifier l&#8217;interface <code>Temperature</code> afin qu&#8217;elle détienne le nom du pays (voir le json reçu du service API).
+<p>Si ce n&#8217;est pas encore fait, modifier l&#8217;interface <code>Temperature</code> afin qu&#8217;elle détienne le nom du pays (voir le json reçu du service API).
 Bien entendu des modifications devront être apportées ici et là dans le code. Faire passer les tests.</p>
 </li>
 <li>
@@ -1695,8 +1687,8 @@ données reçues avec la réponse)</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 1.0<br>
-Last updated 2020-11-30 19:50:23 CET
+Version 1.1<br>
+Last updated 2021-11-18 19:24:33 CET
 </div>
 </div>
 </body>
