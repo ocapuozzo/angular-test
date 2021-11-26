@@ -569,6 +569,12 @@ export class HelloWorldComponent implements OnInit {
 
   @Input() name: string = "unknown";
 
+  temperature: Temperature = {
+    current_condition: {
+      tmp: 42
+    }
+  };
+
    myObserver = {
     next: (data: Temperature) => {
       if (data?.current_condition?.tmp) {

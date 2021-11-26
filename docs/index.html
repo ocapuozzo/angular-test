@@ -1131,6 +1131,12 @@ Nous passons par un objet <code>Observable</code> car l&#8217;appel de l&#8217;A
 37
 38
 39
+40
+41
+42
+43
+44
+45
 </pre></td>
   <td class="code"><pre><span class="reserved">import</span> { Component, Input, OnInit } from <span class="string"><span class="delimiter">'</span><span class="content">@angular/core</span><span class="delimiter">'</span></span>;
 <span class="reserved">import</span> { Temperature } from <span class="string"><span class="delimiter">'</span><span class="content">../model/temperature</span><span class="delimiter">'</span></span>;
@@ -1144,6 +1150,12 @@ Nous passons par un objet <code>Observable</code> car l&#8217;appel de l&#8217;A
 <span class="reserved">export</span> <span class="reserved">class</span> HelloWorldComponent <span class="reserved">implements</span> OnInit {
 
   <span class="error">@</span>Input() name: string = <span class="string"><span class="delimiter">&quot;</span><span class="content">unknown</span><span class="delimiter">&quot;</span></span>;
+
+  temperature: Temperature = {
+    <span class="key">current_condition</span>: {
+      <span class="key">tmp</span>: <span class="integer">42</span>
+    }
+  };
 
    myObserver = {
     <span class="key">next</span>: (data: Temperature) =&gt; {
