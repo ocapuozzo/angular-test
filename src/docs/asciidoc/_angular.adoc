@@ -97,7 +97,7 @@ On installe un framework `css` :
 ----
 npm install bulma --save
 ----
-puis mettons a jour `composer.json`:
+puis mettons a jour `angular.json`:
 
 ----
  "styles": [
@@ -160,7 +160,7 @@ import { Component, OnInit } from '@angular/core';
 @Component({
   selector: 'app-hello-world',
   templateUrl: './hello-world.component.html',
-  styleUrls: ['./hello-world.component.scss']
+  styleUrls: ['./hello-world.component.css']
 })
 export class HelloWorldComponent implements OnInit {
 
@@ -168,10 +168,6 @@ export class HelloWorldComponent implements OnInit {
   name : string = "unknown";
 
   temperature: Temperature = {
-    city_info: {
-      name: "Melun",
-      country: "France"
-    },
     current_condition: {
       tmp: 42
     }

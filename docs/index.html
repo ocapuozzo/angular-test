@@ -268,7 +268,7 @@ $</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>puis mettons a jour <code>composer.json</code>:</p>
+<p>puis mettons a jour <code>angular.json</code>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -355,10 +355,6 @@ $</code></pre>
 30
 31
 32
-33
-34
-35
-36
 </pre></td>
   <td class="code"><pre><span class="reserved">import</span> { Component, OnInit } from <span class="string"><span class="delimiter">'</span><span class="content">@angular/core</span><span class="delimiter">'</span></span>;
 
@@ -374,7 +370,7 @@ $</code></pre>
 <span class="error">@</span>Component({
   <span class="key">selector</span>: <span class="string"><span class="delimiter">'</span><span class="content">app-hello-world</span><span class="delimiter">'</span></span>,
   <span class="key">templateUrl</span>: <span class="string"><span class="delimiter">'</span><span class="content">./hello-world.component.html</span><span class="delimiter">'</span></span>,
-  <span class="key">styleUrls</span>: [<span class="string"><span class="delimiter">'</span><span class="content">./hello-world.component.scss</span><span class="delimiter">'</span></span>]
+  <span class="key">styleUrls</span>: [<span class="string"><span class="delimiter">'</span><span class="content">./hello-world.component.css</span><span class="delimiter">'</span></span>]
 })
 <span class="reserved">export</span> <span class="reserved">class</span> HelloWorldComponent <span class="reserved">implements</span> OnInit {
 
@@ -382,10 +378,6 @@ $</code></pre>
   <span class="key">name</span> : string = <span class="string"><span class="delimiter">&quot;</span><span class="content">unknown</span><span class="delimiter">&quot;</span></span>;
 
   temperature: Temperature = {
-    <span class="key">city_info</span>: {
-      <span class="key">name</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">Melun</span><span class="delimiter">&quot;</span></span>,
-      <span class="key">country</span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">France</span><span class="delimiter">&quot;</span></span>
-    },
     <span class="key">current_condition</span>: {
       <span class="key">tmp</span>: <span class="integer">42</span>
     }
