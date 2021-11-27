@@ -651,7 +651,6 @@ Fort heureusement TypeScript étant typé, les erreurs révélées lors de la co
 
 Par exemple, nous ne manquerons pas de mettre à jour la structure de l'objet retourné par la méthode du service méto :
 
-
 .src/app/service/meteo/meteo.service.ts
 [source, javascript, numbers]
 ----
@@ -712,10 +711,10 @@ describe('MeteoService', () => {
 
   });
 ----
-<1> : Déclaration de la dépendance au service meteo
-<2> : Demande d'instaticiation du service (on fournit ici une classe d'implémentation)
-<3> : Les tests sont réalisés à la réception normale de la réponse
-<4> : Dans l'hypothèse où vous avez réalisé l'exercice demandé ci-dessus.
+<1> Déclaration de la dépendance au service meteo
+<2> Demande d'instanciation du service (on fournit ici une classe d'implémentation)
+<3> Les tests sont réalisés au moment de la réception normale de la réponse (c'est le minimum ici)
+<4> Dans l'hypothèse où vous avez réalisé l'exercice demandé ci-dessus.
 
 == Appel d'un service API via HTTP
 
@@ -737,7 +736,7 @@ export class MeteoService {
   constructor(private httpClient: HttpClient) { }          <1>
 
   getTemperatureFromCity(city : string) : Observable<Temperature>  { <2>
-    return this.httpClient.get(this.getBaseUrl() + "/" + city);
+    return this.httpClient.get<Temperature>(this.getBaseUrl() + "/" + city);
   }
 
   getBaseUrl() : string {                                  <3>
@@ -746,10 +745,9 @@ export class MeteoService {
 }
 ----
 
-<1> Définition d'un attribut (une instance de `HttpClient`) afin de pouvoir lancer des requêtes HTTP depuis la logique de l'application.
+<1> Définition d'un attribut (une instance de `HttpClient`) afin de pouvoir lancer des requêtes HTTP depuis ce service.
 <2> Lancement de la requête HTTP, qui retourne un objet de type `Observable` typé.
 <3> On passe par une méthode pour obtenir l'url appelée, ce qui nous permettra de connaitre, dans les tests, l'url de l'API utilisée.
-
 
 Nous voici avec un service qui dépend d'un autre service... Pas simple à tester.
 
@@ -830,11 +828,129 @@ describe('MeteoService', () => {
 
 image::run-test-suite-service.png[run-test-suite]
 
+== Evolution de l'application
+
+Maintenant que les tests sont passés, nous pouvons nous focaliser sur l'interface utilisateur, l'UX.
+
+On proposera à l'utilisateur de saisir un nom de ville, et l'application mettra automatiquement à jour la température.
+
+.src/app/hello-world/hello-world.component.html
+[source, javascript, numbers]
+----
+<style>
+    .box {
+        box-shadow: inset 0 0 1em white, 0 0 .5em black;
+        text-align: center;
+        width: 250px;
+    }
+</style>
+
+<div class="box">
+    <h2 class="title">Hello world !</h2>
+    <p id="hello">Nice day {{name}}.</p>
+    <p id="tempcity">Today it is {{temperature.current_condition.tmp}}° in {{temperature.city_info.name}}</p>
+    <label for="ville">Ville : </label>
+    <input id="ville" [value]="temperature.city_info.name"  <1>
+                      (input)="setTemperatureCity($event)" size="8" >  <2>
+</div>
+----
+
+<1> On présente un composant HTML `input̀` en liant son attribut `value` à un attribut de la variable d'instance de notre composant déclaré dans le  `ts` (nom de la ville).
+
+<2> On lie l'évenement `change` de l'input à un `handler` (une méthode de notre composant). Ainsi, chaque fois que la valeur du input change, cette méthode est appelée, avec `$event` en argument. Ce `$event` désigne un `DOM event object` pointant (`target) vers le composant cible, l'input ici, permettant à la méthode d'exploiter sa value.
+
+Voici le code du composant correspondant.
+
+.src/app/hello-world/hello-world.component.html
+[source, javascript, numbers]
+----
+import { Component, Input, OnInit } from '@angular/core';
+import { Temperature } from '../model/temperature';
+import { MeteoService } from '../service/meteo/meteo.service';
+
+
+@Component({
+  selector: 'app-hello-world',
+  templateUrl: './hello-world.component.html',
+  styleUrls: ['./hello-world.component.css']
+})
+export class HelloWorldComponent implements OnInit {
+
+  // attributs de la classe
+  name: string = "unknown";
+  temperature: Temperature = {
+    city_info: {
+      name: "Melun",
+      //country: "France"
+    },
+    current_condition: {
+      tmp: 42
+    }
+  };
+
+  myObserver = {
+    next: (data: Temperature) => {
+      if (data?.city_info?.name) {
+        console.log("in observer : " + JSON.stringify(data.city_info.name));
+      }
+      // y a t-il une température dans la réponse du service ?
+      if (data?.current_condition?.tmp) {
+        this.temperature.current_condition.tmp = data.current_condition.tmp;
+      } else {
+        this.temperature.current_condition.tmp = -42;
+      }
+    }
+    ,
+    error: (err: Error) => console.error('Observer got an error: ' + err),
+    complete: () => console.log('Observer got a complete notification'),
+  };
+
+
+  public updateTemperature() {  <1>
+    console.log(`Ville : ${this.temperature.city_info.name}`);
+
+    // La méthode getTemperatureFromCity retourne un Observable,
+    // Nous nous abonnons en tant qu'observateur, via un objet dédié.
+    // Voir https://angular.io/guide/observables
+    const cityName : string = this.temperature.city_info.name; <2>
+    this.meteoService.getTemperatureFromCity(cityName).subscribe(this.myObserver); <3>
+  }
+
+  setTemperatureCity(event: Event) {
+    const cityName = (event.target as HTMLInputElement).value;
+    if (cityName.length > 3) {
+      this.temperature.city_info.name = cityName;
+      this.updateTemperature();
+    }
+  }
+
+  // déclaration d'un service qui sera injecté automatiquement par Angular,
+  // en tant qu'attribut privé (_property_) de la classe.
+  constructor(private meteoService: MeteoService) { }
+
+  ngOnInit(): void {
+    // instruction d'initialisation du composant ici
+  }
+}
+
+----
+
+<1> Cette méthode appelle le service météo en vue d'obtenir la température de la ville saisie par l'utilisateur
+<2> Place le nom de la ville dans une variable pour une meilleure lecture du code.
+<3> Demande au service météo (via un obervateur)
+
+Exemple de résultat (`ng serve`) le 27 nov 2021 à 19h30 :
+
+image::hello-world-paris.png[hello-world-paris]
+
+NOTE: Nos tests unitaires sont toujours opérationnels, sans erreurs et sans echecs.
+
+image::final-all-tests.png[final-all-tests]
+
 == Conclusion
 
 Nous avons présenté comment mettre en oeuvre des tests unitaires avec Angular, et par là même,
 via une méthodologie basée sur le refactoring.
-
 
 === Exercices
 
