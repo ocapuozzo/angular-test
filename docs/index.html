@@ -1049,7 +1049,7 @@ Nous venons de réaliser un <strong><em>refactoring</em></strong>. C&#8217;est t
 
   <span class="comment">// retourne toujours le même objet observable, pour commencer</span>
   getTemperatureFromCity(city : string) : Observable&lt;Temperature&gt;  { <i class="conum" data-value="2"></i><b>(2)</b>
-    <span class="keyword">return</span> of(
+    <span class="keyword">return</span> of( <i class="conum" data-value="3"></i><b>(3)</b>
       {
        <span class="key">current_condition</span>: {
          <span class="key">tmp</span>: <span class="integer">42</span>
@@ -1071,6 +1071,10 @@ Nous venons de réaliser un <strong><em>refactoring</em></strong>. C&#8217;est t
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
 <td>Remarquez que l&#8217;objet <code>Observable</code> retourné est bien compatible avec l&#8217;interface <code>Temperature</code> (le type de la méthode)</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Utilsation de la fonction <code>of</code> de <code>rxjs</code>.  Cette fonction permet de créer une <em>séquence observable</em> (<a href="https://rxjs.dev/api/index/function/of" class="bare">https://rxjs.dev/api/index/function/of</a>). Ainsi on transforme ici un "simple" objet de type <code>Temperature</code> en objet <code>Observable</code>. Rem : <code>of</code> est certainement déduit de <code>Observable Factory</code>&#8230;&#8203;</td>
 </tr>
 </table>
 </div>
@@ -1852,7 +1856,7 @@ describe(<span class="string"><span class="delimiter">'</span><span class="conte
 
   setTemperatureCity(event: Event) {
     const cityName = (event.target as HTMLInputElement).value;
-    <span class="keyword">if</span> (cityName.length &gt; <span class="integer">3</span>) {
+    <span class="keyword">if</span> (cityName.length &gt; <span class="integer">3</span>) {  <i class="conum" data-value="4"></i><b>(4)</b>
       <span class="local-variable">this</span>.temperature.city_info.name = cityName;
       <span class="local-variable">this</span>.updateTemperature();
     }
@@ -1883,6 +1887,10 @@ describe(<span class="string"><span class="delimiter">'</span><span class="conte
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
 <td>Demande au service météo (via un obervateur)</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>La condition (nb de caractères &gt; 3) est là pour limiter le nombre de requêtes HTTP (via <code>updateTemperature</code>)</td>
 </tr>
 </table>
 </div>

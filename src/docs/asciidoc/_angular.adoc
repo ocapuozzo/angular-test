@@ -534,7 +534,7 @@ export class MeteoService {
 
   // retourne toujours le même objet observable, pour commencer
   getTemperatureFromCity(city : string) : Observable<Temperature>  { <2>
-    return of(
+    return of( <3>
       {
        current_condition: {
          tmp: 42
@@ -548,6 +548,7 @@ export class MeteoService {
 
 <1> Cet attribut du décorateur (annotation) `@Injectable` spécifie que le composant est injectable sur l'ensemble de l'application
 <2> Remarquez que l'objet `Observable` retourné est bien compatible avec l'interface `Temperature` (le type de la méthode)
+<3> Utilsation de la fonction `of` de `rxjs`.  Cette fonction permet de créer une _séquence observable_ (https://rxjs.dev/api/index/function/of). Ainsi on transforme ici un "simple" objet de type `Temperature` en objet `Observable`. Rem : `of` est certainement déduit de `Observable Factory`...
 
 NOTE: Nous passons par un objet `Observable` car l'appel de l'API (à venir) est suceptible d'échouer.
 
@@ -918,7 +919,7 @@ export class HelloWorldComponent implements OnInit {
 
   setTemperatureCity(event: Event) {
     const cityName = (event.target as HTMLInputElement).value;
-    if (cityName.length > 3) {
+    if (cityName.length > 3) {  <4>
       this.temperature.city_info.name = cityName;
       this.updateTemperature();
     }
@@ -938,6 +939,7 @@ export class HelloWorldComponent implements OnInit {
 <1> Cette méthode appelle le service météo en vue d'obtenir la température de la ville saisie par l'utilisateur
 <2> Place le nom de la ville dans une variable pour une meilleure lecture du code.
 <3> Demande au service météo (via un obervateur)
+<4> La condition (nb de caractères > 3) est là pour limiter le nombre de requêtes HTTP (via `updateTemperature`)
 
 Exemple de résultat (`ng serve`) le 27 nov 2021 à 19h30 :
 
