@@ -657,7 +657,7 @@ Par exemple, nous ne manquerons pas de mettre à jour la structure de l'objet re
 ----
 [...]
 
-getTemperatureFromCity(city : string) : Observable<Temperature>  { <2>
+getTemperatureFromCity(city : string) : Observable<Temperature>  {
     return of(
       {
        city_info: {
